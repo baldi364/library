@@ -24,7 +24,7 @@ To run the project locally, follow these steps:
 3. Build and run the project using Maven or your preferred IDE.
 4. Access the application through the provided endpoints and explore the features.
 
-Set this environmental variables
+Set these environmental variables
 ![Screenshot 2024-02-22 105717](https://github.com/baldi364/library/assets/134001121/e1389068-c865-42d0-b052-566345f483d7)
 
 Swagger and controllers will appear just like this:

@@ -1,6 +1,6 @@
 <h1>Personal Library Management System</h1>
 
-This project is a personal library management system built with Spring Boot, Spring Security, Hibernate, and MySQL. It provides users with the ability to manage their own library collections, with features including user authentication using JWT tokens, role-based authorization, and CRUD operations on the main database.
+This project is a personal library management system built with Java, Spring Boot, Spring Security, Hibernate and MySQL. It provides users with the ability to manage their own library collections, with features including user authentication using JWT tokens, role-based authorization, and CRUD operations on the main database.
 
 <h3>Key Features</h3>
 
@@ -24,7 +24,7 @@ To run the project locally, follow these steps:
 3. Build and run the project using Maven or your preferred IDE.
 4. Access the application through the provided endpoints and explore the features.
 
-Set these environmental variables
+Set these environmental variables on your preferred IDE
 ![Screenshot 2024-02-22 105717](https://github.com/baldi364/library/assets/134001121/e1389068-c865-42d0-b052-566345f483d7)
 
 Swagger and controllers will appear just like this:

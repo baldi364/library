@@ -1,0 +1,60 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: library
+
+  # Configurazione database
+  datasource:
+    url: jdbc:mysql://${DATABASE_MYSQL_HOSTNAME}:${DATABASE_MYSQL_PORT}/${DATABASE_MYSQL_NAME}?ssl-mode=REQUIRED
+    username: ${DATABASE_MYSQL_USERNAME}
+    password: ${DATABASE_MYSQL_PASSWORD}
+    #url: jdbc:mariadb://localhost:3306/${DATABASE_MYSQL_NAME}?ssl-mode=REQUIRED
+    #username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #driver-class-name: org.mariadb.jdbc.Driver
+
+  data:
+    jpa:
+      repositories:
+        # DEFAULT: i repositories vengono controllati all'avvio dell'applicazione
+        # DEFERRED: i repositories vengono controllati all'avvio dell'applicazione ma in maniera asincrona
+        # LAZY: i repositories vengono controllati solo quando sono richiamati
+        bootstrap-mode: DEFAULT
+
+  # JPA
+  jpa:
+    hibernate:
+      # Values:
+      # none : non viene apportata alcuna modifica al database. Valore DA METTERE in produzione
+      # update: crea le tabelle ed i relativi campi sul database qualora lì non esistano.
+      # Altresi modifica le tabelle esistenti aggiungendo solo i campi nuovi ma non modificando quelli preesistenti.
+      # create-drop: crea le tabelle all'avvio dell'applicazione e ne fa il drop quando stoppo l'applicazione
+      # validated: confronta le classi (entità) con le tabelle; se trova discrepanze solleva una eccezione.
+      ddl-auto: update
+    properties:
+      dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    open-in-view: false
+
+
+logging:
+  level:
+    '[com.nico.library]': info
+    '[org.hibernate.orm.jdbc.bind]': trace
+    '[org.springframework.boot]': info
+
+spring-doc:
+  swagger-ui:
+    enabled: true
+    # hostname:port/swagger-ui.html => localhost:8081/swagger-ui.html
+    path: /swagger-ui.html
+
+# CUSTOM PROPERTIES
+application:
+  security:
+    jwt:
+      tokenType: Bearer
+      secret-key: WS27AFX7HWB8OEWUK6RW5F5C51MWDH57C2I6NDGZCBJ2306QBZISUL3KYAF9RM67
+      expiration: 86400000 # milliseconds -> 1 day

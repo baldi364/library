@@ -20,7 +20,7 @@ This project is a personal library management system built with Spring Boot, Spr
 To run the project locally, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Configure the MySQL database settings in the application.properties file.
+2. Configure the MySQL database settings in the application.yaml file.
 3. Build and run the project using Maven or your preferred IDE.
 4. Access the application through the provided endpoints and explore the features.
 

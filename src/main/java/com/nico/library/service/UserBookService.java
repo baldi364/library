@@ -29,14 +29,22 @@ public class UserBookService
     private final BookRepository bookRepository;
     private final UserBookRepository userBookRepository;
 
+    /**
+     * Questo metodo ggiunge un libro alla libreria di un utente.
+     *
+     * @param userDetails Le informazioni dell'utente autenticato.
+     * @param bookId      L'ID del libro da aggiungere alla libreria.
+     * @return Una ResponseEntity contenente un messaggio di conferma dell'aggiunta del libro alla libreria dell'utente.
+     * @throws ResourceNotFoundException Se l'utente o il libro specificato non esistono nel sistema.
+     */
     public ResponseEntity<?> addUserBook(UserDetails userDetails, int bookId)
     {
-        //Mi ricavo l'utente
+        //Mi ricavo l'utente autenticato e lo cerco nel repository
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        //e poi il libro
+        //poi il libro
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
 
@@ -50,6 +58,13 @@ public class UserBookService
         return new ResponseEntity<>("Book with id " + bookId + " added successfully to user " + username, HttpStatus.CREATED);
     }
 
+    /**
+     * Restituisce la lista dei libri associati all'utente autenticato.
+     *
+     * @param userDetails Le informazioni dell'utente autenticato.
+     * @return Una ResponseEntity contenente la lista dei libri associati all'utente, se presenti.
+     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o non ha libri associati.
+     */
     public ResponseEntity<?> getUserBooks(UserDetails userDetails)
     {
         //Trovo prima l'utente
@@ -57,11 +72,11 @@ public class UserBookService
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-       //Tramite una query trovo solo i libri con delete_date a null legati ad un utente
+       //Tramite una query trovo solo i libri con delete_date a null associati ad un utente
        List<UserBook> userBookList = userBookRepository.findActiveBooksByUser(user);
        List<UserBookResponse> userBookResponseList = new ArrayList<>();
 
-       //Se trovo gli utenti, popolo la lista di risposta
+        // Se l'utente ha libri associati, popolo la lista di risposta con le informazioni dei libri
        if(!userBookList.isEmpty())
        {
             for(UserBook userBook : userBookList)
@@ -82,19 +97,31 @@ public class UserBookService
        }
        else
        {
+           // Se l'utente non ha libri associati, restituisce una ResponseEntity con un messaggio di errore
            return new ResponseEntity<>("No books available for user " + username, HttpStatus.NOT_FOUND);
        }
         return new ResponseEntity<>(userBookResponseList, HttpStatus.OK);
     }
 
+    /**
+     * Elimina un libro dalla libreria dell'utente autenticato.
+     *
+     * @param userDetails Le informazioni dell'utente autenticato.
+     * @param bookId      L'ID del libro da eliminare dalla libreria dell'utente.
+     * @return Una ResponseEntity che conferma l'eliminazione del libro dalla libreria dell'utente, se avvenuta con successo.
+     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o se il libro non è presente nella libreria dell'utente.
+     */
     public ResponseEntity<?> deleteUserBook(UserDetails userDetails, int bookId)
     {
+        // Recupero l'utente autenticato dal repository degli utenti
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new ResourceNotFoundException("User", "username", username));
 
+        // Recupero il libro dall'ID fornito e verifico se è presente nella libreria dell'utente
         Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
 
+        // Se il libro è presente nella libreria dell'utente, imposto la data di eliminazione e salvo
         if (optionalUserBook.isPresent())
         {
             UserBook userBook = optionalUserBook.get();
@@ -103,20 +130,33 @@ public class UserBookService
         }
         else
         {
+            // Se il libro non è presente nella libreria dell'utente, restituisco una ResponseEntity con un messaggio di errore
             return new ResponseEntity<>("No book with id " + bookId + " found for user " + username, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Book with id " + bookId + " successfully deleted from " + username + "'s library", HttpStatus.OK);
     }
 
+    /**
+     * Aggiorna il numero di volte che un determinato libro è stato letto nella libreria dell'utente autenticato.
+     *
+     * @param userDetails Le informazioni dell'utente autenticato.
+     * @param bookId      L'ID del libro da aggiornare.
+     * @param readCount   Il nuovo numero di volte che il libro è stato letto.
+     * @return Una ResponseEntity che conferma l'aggiornamento del conteggio delle letture del libro, se avvenuto con successo.
+     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o se il libro non è presente nella libreria dell'utente.
+     */
     @Transactional
     public ResponseEntity<?> updateBookReadCount(UserDetails userDetails, int bookId, int readCount)
     {
+        // Recupero l'utente autenticato dal repository degli utenti
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new ResourceNotFoundException("User", "username", username));
 
+        // Recupero il libro dall'ID fornito e verifico se è presente nella libreria dell'utente
         Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
 
+        // Se il libro è presente nella libreria dell'utente, aggiorno il conteggio delle letture e salvo
         if(optionalUserBook.isPresent())
         {
             UserBook userBook = optionalUserBook.get();
@@ -125,6 +165,7 @@ public class UserBookService
         }
         else
         {
+            // Se il libro non è presente nella libreria dell'utente, restituisco una ResponseEntity con un messaggio di errore
             return new ResponseEntity<>("No book with id " + bookId + " found for user " + username, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Read count of book with id " + bookId + " updated with value " + readCount, HttpStatus.OK);

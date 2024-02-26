@@ -25,14 +25,20 @@ public class BookService
      * Il metodo restituisce i libri disponibili all'interno della libreria.
      * Trova i libri tramite il metodo findAll() della Repository, che vengono inseriti in una List.
      * Viene creata un'altra List di BookResponse che viene popolata, attraverso un for each, con i libri trovati nella lista precedente
-     * @return la lista dei libri disponibili
+     * @return la lista dei libri disponibili è una ResponseEntity contenente un messaggio di errore
      */
     public ResponseEntity<?> getAvailableBooks()
     {
-        List<Book> bookList = bookRepository.findAll(); //ottengo prima la lista di libri
+        //ottengo prima la lista di libri
+        List<Book> bookList = bookRepository.findAll();
+
+        //Creo una nuova lista vuota di BookResponse
         List<BookResponse> bookResponseList = new ArrayList<>();
-        if(!bookList.isEmpty()) //se la lista non è vuota, procedo
+
+        //se la lista non è vuota, procedo
+        if(!bookList.isEmpty())
         {
+            //Con un foreach ricavo gli attributi con cui creo l'oggetto BookResponse
             for(Book book : bookList)
             {
                 BookResponse bookResponse = new BookResponse(
@@ -43,11 +49,14 @@ public class BookService
                         book.getGenre(),
                         book.getISBN()
                 );
+
+                //aggiungo l'oggetto BookResponse alla lista di BookResponse
                 bookResponseList.add(bookResponse);
             }
         }
         else
         {
+            //Se non ci sono libri disponbili lancio un messaggio di errore
             return new ResponseEntity<>("There are no books available", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(bookResponseList, HttpStatus.OK);
@@ -57,17 +66,21 @@ public class BookService
     /**
      * Questo metodo restituisce il libro trovato per id.
      * Vengono utilizzati gli Optional per la gestione eventualmente del libro non trovato.
-     * @param bookId
+     * @param bookId l'id del libro
      * @return il libro trovato per ID
      */
     public ResponseEntity<?> getBookById(int bookId)
     {
-        Optional<Book> optionalBook = bookRepository.findById(bookId); //utilizzo optional per gestire una query che potrebbe dare null
+        //utilizzo optional per gestire una query che potrebbe ritornarmi un oggetto Book null
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+
+        //se l'optional è vuoto non ho trovato il libro e lancio un messaggio di errore
         if(optionalBook.isEmpty())
         {
             return new ResponseEntity<>("There is no book with id " + bookId, HttpStatus.NOT_FOUND);
         }
 
+        //Altrimenti mi ricavo il libro e creo un nuovo BookResponse
         Book book = optionalBook.get();
         BookResponse bookResponse = new BookResponse(
                     book.getBookId(),
@@ -83,19 +96,31 @@ public class BookService
     /**
      * Questo metodo restituisce una lista di libri trovati per genere.
      * Viene creata una lista di BookResponse popolata attraverso una query JPQL e restituita in formato JSON.
-     * @param genre
-     * @return la lista di Book in base al genere
+     * @param genre l'attributo per cui cercare
+     * @return la lista di BookResponse in base al genere
      */
     public ResponseEntity<?> getBookByGenre(String genre)
     {
+        //Creo una lista di BookResponse di libri trovati per genere tramite una query.
         List<BookResponse> bookResponseList = bookRepository.getBookByGenre(genre);
+
+        //Se la lista è vuota significa che non ho trovato nessun libro e lancio un messaggio di errore.
         if(bookResponseList.isEmpty())
         {
             return new ResponseEntity<>("There are no books with genre " + genre, HttpStatus.NOT_FOUND);
         }
+
+        //Altrimenti restituisco la lista di libri trovati per genere
         return new ResponseEntity<>(bookResponseList, HttpStatus.OK);
     }
 
+    /**
+     * Questo metodo prende come parametro una BookRequest con i parametri da aggiornare e l'ID del libro corrispondente.
+     * Una volta trovato il libro, aggiorna tutti gli attributi del libro
+     * @param request l'oggetto BookRequest contenente le informazioni del libro.
+     * @param bookId
+     * @return una ResponseEntity che conferma l'aggiornamento del libro.
+     */
     @Transactional
     public ResponseEntity<?> updateBookById(BookRequest request, int bookId)
     {
@@ -135,9 +160,12 @@ public class BookService
                                                  String genre,
                                                  String ISBN)
     {
+
+        //Controllo prima che il libro esista tramite una query per ID.
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
 
+        //Utilizzo uno switch per gestire l'attributo da modificare
         switch(fieldToUpdate.toLowerCase())
         {
             case "title" -> book.setTitle(title);
@@ -152,6 +180,12 @@ public class BookService
         return new ResponseEntity<>("Book with id " + book.getBookId() + " and field " + fieldToUpdate + " successfully update!", HttpStatus.OK);
     }
 
+    /**
+     * Questo metodo permette di aggiungere un nuovo libro al DB principale.
+     * Viene semplicemente creato un nuovo libro, i cui attributi vengono recuperati dalla BookRequest.
+     * @param request Un oggetto BookRequest contenente le informazioni del libro
+     * @return una ResponseEntity di successo
+     */
     public ResponseEntity<?> addBook(BookRequest request)
     {
         Book book = new Book(
@@ -166,6 +200,12 @@ public class BookService
         return new ResponseEntity<>("Book with title \"" + request.getTitle() + "\" successfully added!", HttpStatus.CREATED);
     }
 
+    /**
+     * Questo metodo prende come parametro l'id del libro da eliminare, controlla che l'id del libro esista
+     * e procede con l'eliminazione dello stesso.
+     * @param bookId l'id del libro da cancellare
+     * @return ResponseEntity di successo.
+     */
     @Transactional
     public ResponseEntity<?> deleteBookById(int bookId)
     {

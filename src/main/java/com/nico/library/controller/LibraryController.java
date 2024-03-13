@@ -2,8 +2,6 @@ package com.nico.library.controller;
 
 import com.nico.library.service.UserBookService;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +27,7 @@ public class LibraryController
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @PostMapping("/add-user_book")
-    public ResponseEntity addUserBook(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<?>addUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                       @Min(1) int bookId)
     {
         return userBookService.addUserBook(userDetails, bookId);

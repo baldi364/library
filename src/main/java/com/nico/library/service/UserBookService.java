@@ -48,6 +48,13 @@ public class UserBookService
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
 
+        //Verifico che il libro non sia già presente nella libreria dell'utente
+        Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
+        if(optionalUserBook.isPresent())
+        {
+            return new ResponseEntity<>("Book with id " + bookId + " already present in " + user.getUsername() + "'s library", HttpStatus.BAD_REQUEST);
+        }
+
         //Creo entrambi gli UserBook
         UserBookId userBookId = new UserBookId(user, book);
         UserBook userBook = new UserBook(userBookId, 0);
@@ -55,6 +62,7 @@ public class UserBookService
         //Setto l'addDate e salvo
         userBook.setAddDate(LocalDateTime.now());
         userBookRepository.save(userBook);
+
         return new ResponseEntity<>("Book with id " + bookId + " added successfully to user " + username, HttpStatus.CREATED);
     }
 

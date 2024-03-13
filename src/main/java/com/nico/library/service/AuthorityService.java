@@ -29,6 +29,6 @@ public class AuthorityService
                 .orElseThrow(()-> new ResourceNotFoundException("Authority", "id", id));
 
         a.setVisible(!a.isVisible());
-        return new ResponseEntity("Authority updated", HttpStatus.OK);
+        return new ResponseEntity<>("Authority updated", HttpStatus.OK);
     }
 }

@@ -90,17 +90,6 @@ public class UserBookService
             for(UserBook userBook : userBookList)
             {
                 Book book = userBook.getUserBookId().getBook();
-                UserBookResponse userBookResponse = new UserBookResponse(
-                        book.getBookId(),
-                        book.getTitle(),
-                        book.getAuthor(),
-                        book.getPlot(),
-                        book.getGenre(),
-                        book.getISBN(),
-                        userBook.getAddDate(),
-                        userBook.getReadCount()
-                );
-                userBookResponseList.add(userBookResponse);
             }
        }
        else

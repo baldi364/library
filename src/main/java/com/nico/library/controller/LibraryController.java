@@ -34,7 +34,7 @@ public class LibraryController
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
-    @PostMapping("/delete-user_book")
+    @DeleteMapping("/delete-user_book")
     public ResponseEntity<?> deleteUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                         @Min(1) int bookId)
     {

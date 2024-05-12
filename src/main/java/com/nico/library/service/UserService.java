@@ -43,7 +43,7 @@ public class UserService
         user.setEnabled(true);
 
         // Restituisco una ResponseEntity che conferma l'attivazione dell'account dell'utente
-        return new ResponseEntity("Welcome " + username + ", your account is activated", HttpStatus.OK);
+        return new ResponseEntity<>("Welcome " + username + ", your account is activated", HttpStatus.OK);
     }
 
     /**
@@ -82,13 +82,13 @@ public class UserService
         Set<Authority> auths = authorityRepository.findByVisibleTrueAndAuthorityNameIn(authorities);
         if(auths.isEmpty())
         {
-            return new ResponseEntity("Authorities not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Authorities not found", HttpStatus.NOT_FOUND);
         }
 
         //Setto il Set<Authority> su user e salvo
         u.setAuthorities(auths);
         userRepository.save(u);
-        return new ResponseEntity("Authorities updated for user " + u.getUsername(), HttpStatus.OK);
+        return new ResponseEntity<>("Authorities updated for user " + u.getUsername(), HttpStatus.OK);
     }
 
     /**
@@ -101,6 +101,6 @@ public class UserService
     {
         // Converto le informazioni sull'utente corrente in un oggetto UserResponse
         UserResponse u = UserResponse.fromUserDetailsToUserResponse((User) userDetails);
-        return new ResponseEntity(u,HttpStatus.OK);
+        return new ResponseEntity<>(u,HttpStatus.OK);
     }
 }

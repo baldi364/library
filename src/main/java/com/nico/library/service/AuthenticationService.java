@@ -41,7 +41,7 @@ public class AuthenticationService
         // Verifica se l'username o l'email sono già in uso
         if (userRepository.existsByEmailOrUsername(request.getEmail(), request.getUsername()))
         {
-            return new ResponseEntity("Username or Email already in use", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username or Email already in use", HttpStatus.BAD_REQUEST);
         }
 
         // Recupera l'autorità predefinita per i nuovi utenti
@@ -59,7 +59,7 @@ public class AuthenticationService
 
         //salva il nuovo utente
         userRepository.save(user);
-        return new ResponseEntity<String>("User successfully registered",HttpStatus.CREATED);
+        return new ResponseEntity<>("User successfully registered", HttpStatus.CREATED);
     }
 
     //Accesso utente
@@ -93,7 +93,7 @@ public class AuthenticationService
         String jwtToken = jwtService.generateToken(user, user.getUserId());
 
         // Restituisce una ResponseEntity contenente le informazioni dell'utente e il token JWT
-        return new ResponseEntity(AuthenticationResponse.builder()
+        return new ResponseEntity<>(AuthenticationResponse.builder()
                 .id(user.getUserId())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -114,7 +114,7 @@ public class AuthenticationService
     private String[] authorities(Collection<? extends GrantedAuthority> auths)
     {
         return auths.stream()
-                .map(a -> a.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toArray(String[]::new);
     }
 

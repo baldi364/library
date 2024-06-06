@@ -4,7 +4,7 @@ import com.nico.library.entity.Book;
 import com.nico.library.entity.User;
 import com.nico.library.entity.UserBook;
 import com.nico.library.entity.UserBookId;
-import com.nico.library.exception.ResourceNotFoundException;
+import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.response.UserBookResponse;
 import com.nico.library.repository.BookRepository;
 import com.nico.library.repository.UserBookRepository;

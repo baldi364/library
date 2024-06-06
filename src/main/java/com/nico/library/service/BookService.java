@@ -1,13 +1,13 @@
 package com.nico.library.service;
 
 import com.nico.library.entity.Book;
-import com.nico.library.exception.ResourceNotFoundException;
+import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.request.BookRequest;
-import com.nico.library.payload.response.BookIdResponse;
 import com.nico.library.payload.response.BookResponse;
 import com.nico.library.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -186,8 +186,13 @@ public class BookService
      * @param request Un oggetto BookRequest contenente le informazioni del libro
      * @return una ResponseEntity di successo
      */
-    public ResponseEntity<?> addBook(BookRequest request)
-    {
+
+    public ResponseEntity<?> addBook(BookRequest request)  {
+        //Verifico prima che un libro con lo stesso codice ISBN non sia già presente
+        if(bookRepository.findByISBN(request.getISBN()).isPresent()){
+            return new ResponseEntity<>("Book with isbn \"" + request.getISBN() + "\" already present!", HttpStatus.BAD_REQUEST);
+        }
+
         Book book = new Book(
                 request.getTitle(),
                 request.getAuthor(),

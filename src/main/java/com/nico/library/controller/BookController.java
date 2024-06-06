@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,8 +68,7 @@ public class BookController
     //aggiungere un libro
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-book")
-    public ResponseEntity<?> addBook(@RequestBody @Valid BookRequest request)
-    {
+    public ResponseEntity<?> addBook(@RequestBody @Valid BookRequest request) {
         return bookService.addBook(request);
     }
 

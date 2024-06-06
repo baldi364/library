@@ -1,4 +1,4 @@
-package com.nico.library.exception;
+package com.nico.library.exceptions.custom;
 
 
 import lombok.Getter;

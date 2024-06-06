@@ -1,5 +1,6 @@
 package com.nico.library.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class BookRequest
     @Column(length = 20, nullable = false)
     private String genre;
 
+    @JsonProperty("ISBN")
     @Column(name = "ISBN", length = 13, nullable = false, unique = true)
     private String ISBN;
 }

@@ -2,7 +2,7 @@ package com.nico.library.service;
 
 import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
-import com.nico.library.exception.ResourceNotFoundException;
+import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.response.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.repository.UserRepository;

@@ -7,10 +7,10 @@ spring:
 
   # Configurazione database
   datasource:
-    url: jdbc:mysql://${DATABASE_MYSQL_HOSTNAME}:${DATABASE_MYSQL_PORT}/${DATABASE_MYSQL_NAME}?ssl-mode=REQUIRED
-    username: ${DATABASE_MYSQL_USERNAME}
-    password: ${DATABASE_MYSQL_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5433/library_db
+    username: library_admin_user
+    password: library_admin_password
+    driver-class-name: org.postgresql.Driver
 
   data:
     jpa:
@@ -31,7 +31,7 @@ spring:
       # validated: confronta le classi (entità) con le tabelle; se trova discrepanze solleva una eccezione.
       ddl-auto: update
     properties:
-      dialect: org.hibernate.dialect.MySQLDialect
+      dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     open-in-view: false
 
@@ -39,7 +39,8 @@ spring:
 logging:
   level:
     '[com.nico.library]': info
-    '[org.hibernate.orm.jdbc.bind]': trace
+    '[org.hibernate.orm]': debug
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': trace
     '[org.springframework.boot]': info
 
 spring-doc:

@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "book")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,7 +32,7 @@ delete_date DATETIME NULL
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookId;
+    private Long bookId;
 
     @Column(length = 50, nullable = false)
     private String title;
@@ -48,6 +49,7 @@ delete_date DATETIME NULL
     private String ISBN;
 
     @OneToMany(mappedBy = "userBookId.book")
+    @ToString.Exclude
     private Set<UserBook> userBooks = new HashSet<>();
 
     public Book(String title, String author, String plot, String genre, String ISBN)
@@ -64,7 +66,7 @@ delete_date DATETIME NULL
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return bookId == book.bookId;
+        return Objects.equals(bookId, book.bookId);
     }
 
     @Override

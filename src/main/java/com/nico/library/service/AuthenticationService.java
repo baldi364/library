@@ -90,11 +90,11 @@ public class AuthenticationService
         }
 
         // Genera un token JWT per l'utente
-        String jwtToken = jwtService.generateToken(user, user.getUserId());
+        String jwtToken = jwtService.generateToken(user, Math.toIntExact(user.getUserId()));
 
         // Restituisce una ResponseEntity contenente le informazioni dell'utente e il token JWT
         return new ResponseEntity<>(AuthenticationResponse.builder()
-                .id(user.getUserId())
+                .id(Math.toIntExact(user.getUserId()))
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())

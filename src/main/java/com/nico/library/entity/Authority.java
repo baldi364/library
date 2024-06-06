@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "authority")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class Authority
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int authorityId;
+    private Long authorityId;
 
     @Column(length = 30, nullable = false, unique = true)
     private String authorityName;
@@ -34,7 +35,7 @@ public class Authority
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
-        return authorityId == authority.authorityId;
+        return Objects.equals(authorityId, authority.authorityId);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class UserBookResponse
 {
-    private int id;
+    private Long id;
     private String title;
     private String author;
     private String plot;
@@ -17,7 +17,7 @@ public class UserBookResponse
     private LocalDateTime addDate;
     private int readCount;
 
-    public UserBookResponse(int id, String title, String author, String plot, String genre, String ISBN, LocalDateTime addDate, int readCount) {
+    public UserBookResponse(Long id, String title, String author, String plot, String genre, String ISBN, LocalDateTime addDate, int readCount) {
         this.id = id;
         this.title = title;
         this.author = author;

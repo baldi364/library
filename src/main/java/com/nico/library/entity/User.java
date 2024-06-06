@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user")
+@Table(name = "library_user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,7 +31,7 @@ username VARCHAR(15) UNIQUE NOT NULL
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
 
     @Column(length = 25, nullable = false)
     private String name;
@@ -116,7 +116,7 @@ username VARCHAR(15) UNIQUE NOT NULL
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId;
+        return Objects.equals(userId, user.userId);
     }
 
     @Override

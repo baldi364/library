@@ -15,7 +15,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserResponse
 {
-    private int id;
+    private Long id;
     private String name;
     private String surname;
     private String username;

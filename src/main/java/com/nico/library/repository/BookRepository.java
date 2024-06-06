@@ -19,6 +19,6 @@ public interface BookRepository extends JpaRepository<Book, Integer>
             "b.genre, " +
             "b.ISBN) " +
             "FROM Book b " +
-            "WHERE b.genre = :genre")
-    List<BookResponse> getBookByGenre(String genre);
+            "WHERE LOWER(b.genre) = LOWER(:genre)")
+    List<BookResponse> getBookByGenreIgnoreCase(String genre);
 }

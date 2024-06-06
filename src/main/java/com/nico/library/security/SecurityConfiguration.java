@@ -30,9 +30,9 @@ public class SecurityConfiguration
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**",
-                                "/book/get**",
-                                "/book/get**/**",
+                        .requestMatchers("/auths/**",
+                                "/books/get**",
+                                "/books/get**/**",
                                 "/public/**",
                                 "/{pathvariable:[0-9A-Za-z]+}/public/**", //qualunque cosa sia scritta prima di public a lui va bene
                                 "/v2/api-docs",

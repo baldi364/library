@@ -102,7 +102,7 @@ public class BookService
     public ResponseEntity<?> getBookByGenre(String genre)
     {
         //Creo una lista di BookResponse di libri trovati per genere tramite una query.
-        List<BookResponse> bookResponseList = bookRepository.getBookByGenre(genre);
+        List<BookResponse> bookResponseList = bookRepository.getBookByGenreIgnoreCase(genre);
 
         //Se la lista è vuota significa che non ho trovato nessun libro e lancio un messaggio di errore.
         if(bookResponseList.isEmpty())

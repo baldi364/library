@@ -26,14 +26,14 @@ public class UserController
     //Attivare l'utente
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/activate/{jwt}")
-    public ResponseEntity<?> activate(@PathVariable @NotBlank String jwt)
+    public ResponseEntity<?> activate(@PathVariable("jwt") @NotBlank String jwt)
     {
         return userService.activate(jwt);
     }
 
     //Ottenere l'username di un utente
     @GetMapping("/get-username/{userId}")
-    public ResponseEntity<?> getUsername(@PathVariable @Min(1) int userId)
+    public ResponseEntity<?> getUsername(@PathVariable("userId") @Min(1) int userId)
     {
         return userService.findUsername(userId);
     }
@@ -46,7 +46,7 @@ public class UserController
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update_auths/{userId}")
-    public ResponseEntity<?> updateAuths(@PathVariable @Min(1) int userId,
+    public ResponseEntity<?> updateAuths(@PathVariable("userId") @Min(1) int userId,
                                          @RequestBody @NotEmpty Set<String> authorities)
     {
         return userService.updateAuthorities(userId, authorities);

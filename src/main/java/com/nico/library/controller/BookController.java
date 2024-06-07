@@ -30,14 +30,14 @@ public class BookController
 
     //Trovare un libro tramite l'id
     @GetMapping("/get-book-by-id/{bookId}")
-    public ResponseEntity<?> getBookById(@PathVariable @Min(1) int bookId)
+    public ResponseEntity<?> getBookById(@PathVariable("bookId") @Min(1) int bookId)
     {
         return bookService.getBookById(bookId);
     }
 
     //Trovare un libro per genere
     @GetMapping("/get-book-by-genre/{genre}")
-    public ResponseEntity<?> getBookByGenre(@PathVariable @NotBlank @Length(max = 20) String genre)
+    public ResponseEntity<?> getBookByGenre(@PathVariable("genre") @NotBlank @Length(max = 20) String genre)
     {
         return bookService.getBookByGenre(genre);
     }
@@ -46,7 +46,7 @@ public class BookController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-book/{bookId}")
     public ResponseEntity<?> updateBookById(@RequestBody @Valid BookRequest request,
-                                            @PathVariable @Min(1) int bookId)
+                                            @PathVariable("bookId") @Min(1) int bookId)
     {
         return bookService.updateBookById(request, bookId);
     }
@@ -54,7 +54,7 @@ public class BookController
     //aggiornare determinati campi del libro
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-book-field/{bookId}")
-    public ResponseEntity<?> updateBookFieldById(@PathVariable @Min(1) int bookId,
+    public ResponseEntity<?> updateBookFieldById(@PathVariable("bookId") @Min(1) int bookId,
                                                  @RequestParam @NotBlank String fieldToUpdate,
                                                  @RequestParam(required = false) @Length(max = 50) String title,
                                                  @RequestParam(required = false) @Length(max = 50) String author,
@@ -75,7 +75,7 @@ public class BookController
     //eliminare un libro tramite id
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("delete-book/{bookId}")
-    public ResponseEntity<?> deleteBookById(@PathVariable @Min(1) int bookId)
+    public ResponseEntity<?> deleteBookById(@PathVariable("bookId") @Min(1) int bookId)
     {
         return bookService.deleteBookById(bookId);
     }

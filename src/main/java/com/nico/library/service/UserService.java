@@ -99,6 +99,10 @@ public class UserService
      */
     public ResponseEntity<?> getMe(UserDetails userDetails)
     {
+        if(userDetails == null){
+            return new ResponseEntity<>("No user logged! Please, log in and try again.", HttpStatus.BAD_REQUEST);
+        }
+
         // Converto le informazioni sull'utente corrente in un oggetto UserResponse
         UserResponse u = UserResponse.fromUserDetailsToUserResponse((User) userDetails);
         return new ResponseEntity<>(u,HttpStatus.OK);

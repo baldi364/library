@@ -33,6 +33,7 @@ public class SecurityConfiguration
                         .requestMatchers("/auths/**",
                                 "/books/get**",
                                 "/books/get**/**",
+                                "/user/get**/**",
                                 "/public/**",
                                 "/{pathvariable:[0-9A-Za-z]+}/public/**", //qualunque cosa sia scritta prima di public a lui va bene
                                 "/v2/api-docs",

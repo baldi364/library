@@ -38,7 +38,7 @@ To run the project locally, follow these steps:
 5. Access the application through the provided endpoints and explore the features.
 
 Set these user and password on PostgreSQL
-![Screenshot 2024-06-09 122342](https://github.com/baldi364/library/assets/134001121/3eec2934-656c-42c7-a7e7-3ba0097f4ff1)
+![Screenshot 2024-06-09 122342]
 
 (https://github.com/baldi364/library/assets/134001121/e1389068-c865-42d0-b052-566345f483d7)
 

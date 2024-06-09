@@ -39,10 +39,10 @@ To run the project locally, follow these steps:
 
 Set these user and password on PostgreSQL:
 ```
-" environment:
+environment:
       - 'POSTGRES_DB=library_db'
       - 'POSTGRES_USER=library_admin_user'
-      - 'POSTGRES_PASSWORD=library_admin_password'"
+      - 'POSTGRES_PASSWORD=library_admin_password'
 ```
 
 Swagger and controllers will appear just like this:

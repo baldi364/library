@@ -40,7 +40,5 @@ To run the project locally, follow these steps:
 Set these user and password on PostgreSQL
 ![Screenshot 2024-06-09 122342]
 
-(https://github.com/baldi364/library/assets/134001121/e1389068-c865-42d0-b052-566345f483d7)
-
 Swagger and controllers will appear just like this:
 ![Screenshot 2024-02-22 103826](https://github.com/baldi364/library/assets/134001121/ae0bb226-b97c-475d-87bb-5c33efb0afaf)

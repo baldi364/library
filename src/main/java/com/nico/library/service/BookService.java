@@ -1,19 +1,19 @@
 package com.nico.library.service;
 
 import com.nico.library.entity.Book;
+import com.nico.library.exceptions.custom.BadRequestException;
+import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.request.BookRequest;
 import com.nico.library.payload.response.BookResponse;
 import com.nico.library.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +57,7 @@ public class BookService
         else
         {
             //Se non ci sono libri disponbili lancio un messaggio di errore
-            return new ResponseEntity<>("There are no books available", HttpStatus.NOT_FOUND);
+            throw new EmptyListException("books");
         }
         return new ResponseEntity<>(bookResponseList, HttpStatus.OK);
     }
@@ -65,23 +65,16 @@ public class BookService
 
     /**
      * Questo metodo restituisce il libro trovato per id.
-     * Vengono utilizzati gli Optional per la gestione eventualmente del libro non trovato.
      * @param bookId l'id del libro
      * @return il libro trovato per ID
      */
     public ResponseEntity<?> getBookById(int bookId)
     {
-        //utilizzo optional per gestire una query che potrebbe ritornarmi un oggetto Book null
-        Optional<Book> optionalBook = bookRepository.findById(bookId);
-
-        //se l'optional è vuoto non ho trovato il libro e lancio un messaggio di errore
-        if(optionalBook.isEmpty())
-        {
-            return new ResponseEntity<>("There is no book with id " + bookId, HttpStatus.NOT_FOUND);
-        }
+        //Utilizzo un findById, se non lo trova lancio un messaggio di errore
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
 
         //Altrimenti mi ricavo il libro e creo un nuovo BookResponse
-        Book book = optionalBook.get();
         BookResponse bookResponse = new BookResponse(
                     book.getBookId(),
                     book.getTitle(),
@@ -107,7 +100,7 @@ public class BookService
         //Se la lista è vuota significa che non ho trovato nessun libro e lancio un messaggio di errore.
         if(bookResponseList.isEmpty())
         {
-            return new ResponseEntity<>("There are no books with genre " + genre, HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("Book", "genre", genre);
         }
 
         //Altrimenti restituisco la lista di libri trovati per genere
@@ -190,7 +183,7 @@ public class BookService
     public ResponseEntity<?> addBook(BookRequest request)  {
         //Verifico prima che un libro con lo stesso codice ISBN non sia già presente
         if(bookRepository.findByISBN(request.getISBN()).isPresent()){
-            return new ResponseEntity<>("Book with isbn \"" + request.getISBN() + "\" already present!", HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(String.format("Book with isbn '%s' already present!", request.getISBN()));
         }
 
         Book book = new Book(
@@ -221,62 +214,4 @@ public class BookService
 
         return new ResponseEntity<>("Book with id " + book.getBookId() + " successfully deleted!", HttpStatus.OK);
     }
-
-
-//    @Transactional
-//    public ResponseEntity<?> updateBookTitleById(String title, int bookId)
-//    {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
-//
-//        book.setTitle(title);
-//
-//        return new ResponseEntity<>("Book with new title \"" + title + "\" successfully update", HttpStatus.OK);
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<?> updateBookAuthorById(String author, int bookId)
-//    {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
-//
-//        book.setAuthor(author);
-//
-//        return new ResponseEntity<>("Book with new author \"" + author + "\" successfully update", HttpStatus.OK);
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<?> updateBookPlotById(String plot, int bookId)
-//    {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
-//
-//        book.setPlot(plot);
-//
-//        return new ResponseEntity<>("Book with new plot \"" + plot + "\" successfully update", HttpStatus.OK);
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<?> updateBookGenreById(String genre, int bookId)
-//    {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
-//
-//        book.setGenre(genre);
-//
-//        return new ResponseEntity<>("Book with new genre \"" + genre + "\" successfully update", HttpStatus.OK);
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<?> updateBookIsbnById(String ISBN, int bookId)
-//    {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
-//
-//        book.setISBN(ISBN);
-//
-//        return new ResponseEntity<>("Book with new ISBN " + ISBN + " successfully update", HttpStatus.OK);
-//    }
-
-
 }

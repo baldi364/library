@@ -19,15 +19,6 @@ import java.util.stream.Collectors;
 @Builder
 public class User implements UserDetails
 {
-    /*
-    CREATE TABLE IF NOT EXISTS `user`(
-user_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-`name` VARCHAR(25) NOT NULL,
-surname VARCHAR(25) NOT NULL,
-email VARCHAR(30) UNIQUE NOT NULL,
-username VARCHAR(15) UNIQUE NOT NULL
-);
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

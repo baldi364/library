@@ -1,6 +1,5 @@
 package com.nico.library.payload.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

@@ -18,16 +18,6 @@ import java.util.Objects;
 @ToString
 public class UserBook extends Creation
 {
-      /*
-    CREATE TABLE IF NOT EXISTS user_book(
-user_id INT NOT NULL,
-book_id INT NOT NULL,
-read_count INT DEFAULT 0,
-PRIMARY KEY (user_id, book_id),
-FOREIGN KEY (user_id) REFERENCES `user`(user_id),
-FOREIGN KEY (book_id) REFERENCES book(book_id)
-);
-     */
 
     @EmbeddedId
     private UserBookId userBookId;

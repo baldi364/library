@@ -5,8 +5,6 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.xml.transform.Source;
-
 @Getter
 @Setter
 public class BookRequest

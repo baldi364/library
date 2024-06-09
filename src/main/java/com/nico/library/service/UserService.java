@@ -2,6 +2,8 @@ package com.nico.library.service;
 
 import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
+import com.nico.library.exceptions.custom.BadRequestException;
+import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.response.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
@@ -82,7 +84,7 @@ public class UserService
         Set<Authority> auths = authorityRepository.findByVisibleTrueAndAuthorityNameIn(authorities);
         if(auths.isEmpty())
         {
-            return new ResponseEntity<>("Authorities not found", HttpStatus.NOT_FOUND);
+            throw new EmptyListException("authorities");
         }
 
         //Setto il Set<Authority> su user e salvo
@@ -100,7 +102,7 @@ public class UserService
     public ResponseEntity<?> getMe(UserDetails userDetails)
     {
         if(userDetails == null){
-            return new ResponseEntity<>("No user logged! Please, log in and try again.", HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("No user logged! Please, log in and try again.");
         }
 
         // Converto le informazioni sull'utente corrente in un oggetto UserResponse

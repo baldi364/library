@@ -13,7 +13,10 @@ import java.time.ZonedDateTime;
 @ControllerAdvice
 public class ExceptionManagement
 {
-    @ExceptionHandler({EmptyListException.class, ResourceNotFoundException.class})
+    @ExceptionHandler({
+            EmptyListException.class,
+            ResourceNotFoundException.class
+    })
     public ResponseEntity<Object> NotFoundExceptionManagement(RuntimeException ex, HttpServletRequest request)
     {
         HttpStatus notFound = HttpStatus.NOT_FOUND;

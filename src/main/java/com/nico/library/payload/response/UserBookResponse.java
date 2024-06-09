@@ -1,6 +1,5 @@
 package com.nico.library.payload.response;
 
-import com.nico.library.entity.Book;
 import lombok.Data;
 
 import java.time.LocalDateTime;

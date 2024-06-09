@@ -4,6 +4,7 @@ import com.nico.library.entity.Book;
 import com.nico.library.entity.User;
 import com.nico.library.entity.UserBook;
 import com.nico.library.entity.UserBookId;
+import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.payload.response.UserBookResponse;
 import com.nico.library.repository.BookRepository;
@@ -105,8 +106,8 @@ public class UserBookService
        }
        else
        {
-           // Se l'utente non ha libri associati, restituisce una ResponseEntity con un messaggio di errore
-           return new ResponseEntity<>("No books available for user " + username, HttpStatus.NOT_FOUND);
+           // Se l'utente non ha libri associati, restituisco un messaggio di errore
+           throw new EmptyListException("books", username);
        }
         return new ResponseEntity<>(userBookResponseList, HttpStatus.OK);
     }
@@ -138,8 +139,8 @@ public class UserBookService
         }
         else
         {
-            // Se il libro non è presente nella libreria dell'utente, restituisco una ResponseEntity con un messaggio di errore
-            return new ResponseEntity<>("No book with id " + bookId + " found for user " + username, HttpStatus.NOT_FOUND);
+            // Se il libro non è presente nella libreria dell'utente, restituisco un messaggio di errore
+            throw new ResourceNotFoundException("Book", "id", bookId, username);
         }
         return new ResponseEntity<>("Book with id " + bookId + " successfully deleted from " + username + "'s library", HttpStatus.OK);
     }
@@ -174,7 +175,7 @@ public class UserBookService
         else
         {
             // Se il libro non è presente nella libreria dell'utente, restituisco una ResponseEntity con un messaggio di errore
-            return new ResponseEntity<>("No book with id " + bookId + " found for user " + username, HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("Book", "id", bookId, username);
         }
         return new ResponseEntity<>("Read count of book with id " + bookId + " updated with value " + readCount, HttpStatus.OK);
     }

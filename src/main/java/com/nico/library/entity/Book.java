@@ -17,18 +17,6 @@ import java.util.Set;
 @ToString
 public class Book extends Creation
 {
-    /*
-    CREATE TABLE IF NOT EXISTS book(
-book_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-title VARCHAR(50) NOT NULL,
-author VARCHAR(50) NOT NULL,
-plot TEXT,
-genre VARCHAR(20) NOT NULL,
-ISBN VARCHAR(13) NOT NULL UNIQUE,
-add_date DATETIME NOT NULL,
-delete_date DATETIME NULL
-);
-     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

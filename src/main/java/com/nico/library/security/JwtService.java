@@ -1,7 +1,5 @@
 package com.nico.library.security;
 
-import com.nico.library.entity.User;
-import com.nico.library.utils.JWTConst;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

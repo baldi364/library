@@ -1,6 +1,5 @@
 package com.nico.library.controller;
 
-import com.nico.library.service.AuthenticationService;
 import com.nico.library.service.UserService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

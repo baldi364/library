@@ -26,7 +26,7 @@ INSERT INTO authority (authority_name, default_authority, `visible`) VALUES
 ----- QUERY
 
 -- QUERY PRONTA PER SETTARE ROLE_ADMIN IN QUALSIASI USER REGISTRATO (sostituire ? con l'id dello user desiderato)
-UPDATE user_authorites SET authority_id = 1 WHERE user_id = ?
+UPDATE user_authorities SET authority_id = 1 WHERE user_id = ?
  
 -- QUERY PRONTA PER TROVARE UTENTI ED I LORO RUOLI
 SELECT u.username, a.authority_name

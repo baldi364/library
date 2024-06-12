@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres-db:
-    image: 'postgres:latest'
+    image: 'postgres:alpine'
     container_name: library-db
     environment:
       - 'POSTGRES_DB=library_db'

@@ -1,8 +1,13 @@
 package com.nico.library.service.implementation;
 
+import com.nico.library.dto.mapper.AuthorityMapper;
+import com.nico.library.dto.request.authority.AuthorityRequest;
+import com.nico.library.dto.response.authority.AuthorityResponse;
 import com.nico.library.entity.Authority;
+import com.nico.library.exceptions.custom.BadRequestException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.repository.AuthorityRepository;
+import com.nico.library.service.AuthorityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,15 +16,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorityServiceImpl
+public class AuthorityServiceImpl implements AuthorityService
 {
     private final AuthorityRepository authorityRepository;
+    private final AuthorityMapper authorityMapper;
 
-    public ResponseEntity<?> addAuthority(String newAuthority) {
-        if(authorityRepository.existsByAuthorityName(newAuthority))
-            return new ResponseEntity<>("Authority already present", HttpStatus.BAD_REQUEST);
+    public AuthorityResponse addAuthority(AuthorityRequest request) {
+        if(authorityRepository.existsByAuthorityName(request.getAuthorityName()))
+            throw new BadRequestException("Authority already present");
 
-        return new ResponseEntity<>(authorityRepository.save(new Authority(newAuthority)), HttpStatus.CREATED);
+        Authority authority = authorityMapper.asEntity(request);
+        Authority savedAuthority = authorityRepository.save(authority);
+
+        return authorityMapper.asResponse(savedAuthority);
     }
 
     @Transactional

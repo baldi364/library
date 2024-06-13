@@ -1,5 +1,7 @@
 package com.nico.library.controller;
 
+import com.nico.library.dto.request.authority.AuthorityRequest;
+import com.nico.library.dto.response.authority.AuthorityResponse;
 import com.nico.library.service.implementation.AuthorityServiceImpl;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,9 +22,10 @@ public class AuthorityController
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-authority")
-    public ResponseEntity<?> addAuthority(@RequestParam @Size(max = 30, min = 7) @NotEmpty String newAuthority)
+    public ResponseEntity<AuthorityResponse> addAuthority(@RequestBody AuthorityRequest request)
     {
-        return authorityServiceImpl.addAuthority(newAuthority);
+        AuthorityResponse response = authorityServiceImpl.addAuthority(request);
+        return ResponseEntity.ok().body(response);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -4,7 +4,6 @@ import com.nico.library.dto.mapper.BookMapper;
 import com.nico.library.entity.Book;
 import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.BadRequestException;
-import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.dto.request.book.BookRequest;
 import com.nico.library.dto.response.book.BookResponse;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

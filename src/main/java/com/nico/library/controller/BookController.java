@@ -1,6 +1,7 @@
 package com.nico.library.controller;
 
 import com.nico.library.dto.request.book.BookRequest;
+import com.nico.library.dto.response.book.BookResponse;
 import com.nico.library.service.implementation.BookServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -12,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
@@ -22,9 +25,10 @@ public class BookController
 
     //Vedere tutti i libri disponibili
     @GetMapping("/get-books")
-    public ResponseEntity<?> getAllBooksAvailable()
+    public ResponseEntity<List<BookResponse>> getAllBooksAvailable()
     {
-        return bookServiceImpl.getAvailableBooks();
+        List<BookResponse> response = bookServiceImpl.getAvailableBooks();
+        return ResponseEntity.ok().body(response);
     }
 
     //Trovare un libro tramite l'id

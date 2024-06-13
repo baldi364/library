@@ -12,16 +12,10 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>
 {
-    @Query("SELECT new com.nico.library.dto.response.book.BookResponse(" +
-            "b.bookId, " +
-            "b.title, " +
-            "b.author, " +
-            "b.plot, " +
-            "b.genre, " +
-            "b.ISBN) " +
+    @Query("SELECT b " +
             "FROM Book b " +
             "WHERE LOWER(b.genre) = LOWER(:genre)")
-    List<BookResponse> getBookByGenreIgnoreCase(String genre);
+    List<Book> getBookByGenreIgnoreCase(String genre);
 
     Optional<Book> findByISBN(String ISBN);
 }

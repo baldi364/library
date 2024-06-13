@@ -2,6 +2,7 @@ package com.nico.library.controller;
 
 import com.nico.library.dto.request.book.BookRequest;
 import com.nico.library.dto.response.book.BookResponse;
+import com.nico.library.entity.Book;
 import com.nico.library.service.implementation.BookServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -27,22 +28,24 @@ public class BookController
     @GetMapping("/get-books")
     public ResponseEntity<List<BookResponse>> getAllBooksAvailable()
     {
-        List<BookResponse> response = bookServiceImpl.getAvailableBooks();
-        return ResponseEntity.ok().body(response);
+        List<BookResponse> responses = bookServiceImpl.getAvailableBooks();
+        return ResponseEntity.ok().body(responses);
     }
 
     //Trovare un libro tramite l'id
     @GetMapping("/get-book-by-id/{bookId}")
-    public ResponseEntity<?> getBookById(@PathVariable("bookId") @Min(1) int bookId)
+    public ResponseEntity<BookResponse> getBookById(@PathVariable("bookId") @Min(1) int bookId)
     {
-        return bookServiceImpl.getBookById(bookId);
+        BookResponse response = bookServiceImpl.getBookById(bookId);
+        return ResponseEntity.ok().body(response);
     }
 
     //Trovare un libro per genere
     @GetMapping("/get-book-by-genre/{genre}")
-    public ResponseEntity<?> getBookByGenre(@PathVariable("genre") @NotBlank @Length(max = 20) String genre)
+    public ResponseEntity<List<BookResponse>> getBookByGenre(@PathVariable("genre") @NotBlank @Length(max = 20) String genre)
     {
-        return bookServiceImpl.getBookByGenre(genre);
+        List<BookResponse> responses = bookServiceImpl.getBookByGenre(genre);
+        return ResponseEntity.ok().body(responses);
     }
 
     //aggiornare libro per id

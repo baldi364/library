@@ -1,6 +1,6 @@
 package com.nico.library.controller;
 
-import com.nico.library.service.UserService;
+import com.nico.library.service.implementation.UserServiceImpl;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,27 +20,27 @@ import java.util.Set;
 @RequestMapping("/user")
 public class UserController
 {
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     //Attivare l'utente
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/activate/{jwt}")
     public ResponseEntity<?> activate(@PathVariable("jwt") @NotBlank String jwt)
     {
-        return userService.activate(jwt);
+        return userServiceImpl.activate(jwt);
     }
 
     //Ottenere l'username di un utente
     @GetMapping("/get-username/{userId}")
     public ResponseEntity<?> getUsername(@PathVariable("userId") @Min(1) int userId)
     {
-        return userService.findUsername(userId);
+        return userServiceImpl.findUsername(userId);
     }
 
     @GetMapping("get-me")
     public ResponseEntity<?> getMe(@AuthenticationPrincipal UserDetails userDetails)
     {
-        return userService.getMe(userDetails);
+        return userServiceImpl.getMe(userDetails);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -48,6 +48,6 @@ public class UserController
     public ResponseEntity<?> updateAuths(@PathVariable("userId") @Min(1) int userId,
                                          @RequestBody @NotEmpty Set<String> authorities)
     {
-        return userService.updateAuthorities(userId, authorities);
+        return userServiceImpl.updateAuthorities(userId, authorities);
     }
 }

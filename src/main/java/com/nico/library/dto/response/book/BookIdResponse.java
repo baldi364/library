@@ -1,4 +1,4 @@
-package com.nico.library.payload.response;
+package com.nico.library.dto.response.book;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

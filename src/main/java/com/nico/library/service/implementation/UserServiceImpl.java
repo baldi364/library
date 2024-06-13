@@ -1,11 +1,11 @@
-package com.nico.library.service;
+package com.nico.library.service.implementation;
 
 import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
 import com.nico.library.exceptions.custom.BadRequestException;
 import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
-import com.nico.library.payload.response.UserResponse;
+import com.nico.library.dto.response.user.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.repository.UserRepository;
 import com.nico.library.security.JwtService;
@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService
+public class UserServiceImpl
 {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;

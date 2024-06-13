@@ -1,4 +1,4 @@
-package com.nico.library.service;
+package com.nico.library.service.implementation;
 
 import com.nico.library.entity.Book;
 import com.nico.library.entity.User;
@@ -6,7 +6,7 @@ import com.nico.library.entity.UserBook;
 import com.nico.library.entity.UserBookId;
 import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
-import com.nico.library.payload.response.UserBookResponse;
+import com.nico.library.dto.response.user.UserBookResponse;
 import com.nico.library.repository.BookRepository;
 import com.nico.library.repository.UserBookRepository;
 import com.nico.library.repository.UserRepository;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserBookService
+public class UserBookServiceImpl
 {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;

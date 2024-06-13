@@ -1,4 +1,4 @@
-package com.nico.library.payload.request;
+package com.nico.library.dto.request.authentication;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

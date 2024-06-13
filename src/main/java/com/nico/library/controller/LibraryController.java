@@ -1,6 +1,6 @@
 package com.nico.library.controller;
 
-import com.nico.library.service.UserBookService;
+import com.nico.library.service.implementation.UserBookServiceImpl;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class LibraryController
 {
-    private final UserBookService userBookService;
+    private final UserBookServiceImpl userBookServiceImpl;
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/get_user_books")
     public ResponseEntity<?> getUserBooks(@AuthenticationPrincipal UserDetails userDetails)
     {
-        return userBookService.getUserBooks(userDetails);
+        return userBookServiceImpl.getUserBooks(userDetails);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -30,7 +30,7 @@ public class LibraryController
     public ResponseEntity<?>addUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                         @PathVariable("bookId") @Min(1) int bookId)
     {
-        return userBookService.addUserBook(userDetails, bookId);
+        return userBookServiceImpl.addUserBook(userDetails, bookId);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -38,7 +38,7 @@ public class LibraryController
     public ResponseEntity<?> deleteUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                             @PathVariable("bookId") @Min(1) int bookId)
     {
-        return userBookService.deleteUserBook(userDetails, bookId);
+        return userBookServiceImpl.deleteUserBook(userDetails, bookId);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -47,7 +47,7 @@ public class LibraryController
                                                  @PathVariable("bookId") @Min(1) int bookId,
                                                  @RequestParam @Min(0) int readCount)
     {
-        return userBookService.updateBookReadCount(userDetails, bookId, readCount);
+        return userBookServiceImpl.updateBookReadCount(userDetails, bookId, readCount);
     }
 
 

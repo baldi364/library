@@ -1,7 +1,7 @@
 package com.nico.library.controller;
 
-import com.nico.library.payload.request.BookRequest;
-import com.nico.library.service.BookService;
+import com.nico.library.dto.request.book.BookRequest;
+import com.nico.library.service.implementation.BookServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,27 +18,27 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class BookController
 {
-    private final BookService bookService;
+    private final BookServiceImpl bookServiceImpl;
 
     //Vedere tutti i libri disponibili
     @GetMapping("/get-books")
     public ResponseEntity<?> getAllBooksAvailable()
     {
-        return bookService.getAvailableBooks();
+        return bookServiceImpl.getAvailableBooks();
     }
 
     //Trovare un libro tramite l'id
     @GetMapping("/get-book-by-id/{bookId}")
     public ResponseEntity<?> getBookById(@PathVariable("bookId") @Min(1) int bookId)
     {
-        return bookService.getBookById(bookId);
+        return bookServiceImpl.getBookById(bookId);
     }
 
     //Trovare un libro per genere
     @GetMapping("/get-book-by-genre/{genre}")
     public ResponseEntity<?> getBookByGenre(@PathVariable("genre") @NotBlank @Length(max = 20) String genre)
     {
-        return bookService.getBookByGenre(genre);
+        return bookServiceImpl.getBookByGenre(genre);
     }
 
     //aggiornare libro per id
@@ -47,7 +47,7 @@ public class BookController
     public ResponseEntity<?> updateBookById(@RequestBody @Valid BookRequest request,
                                             @PathVariable("bookId") @Min(1) int bookId)
     {
-        return bookService.updateBookById(request, bookId);
+        return bookServiceImpl.updateBookById(request, bookId);
     }
 
     //aggiornare determinati campi del libro
@@ -61,14 +61,14 @@ public class BookController
                                                  @RequestParam(required = false) @Length(max = 20) String genre,
                                                  @RequestParam(required = false) @Length(max = 13) String ISBN)
     {
-        return bookService.updateBookFieldById(bookId, fieldToUpdate, title, author, plot, genre, ISBN);
+        return bookServiceImpl.updateBookFieldById(bookId, fieldToUpdate, title, author, plot, genre, ISBN);
     }
 
     //aggiungere un libro
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-book")
     public ResponseEntity<?> addBook(@RequestBody @Valid BookRequest request) {
-        return bookService.addBook(request);
+        return bookServiceImpl.addBook(request);
     }
 
     //eliminare un libro tramite id
@@ -76,7 +76,7 @@ public class BookController
     @DeleteMapping("delete-book/{bookId}")
     public ResponseEntity<?> deleteBookById(@PathVariable("bookId") @Min(1) int bookId)
     {
-        return bookService.deleteBookById(bookId);
+        return bookServiceImpl.deleteBookById(bookId);
     }
 
 

@@ -1,4 +1,4 @@
-package com.nico.library.payload.response;
+package com.nico.library.dto.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

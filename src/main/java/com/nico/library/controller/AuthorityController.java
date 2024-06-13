@@ -1,6 +1,6 @@
 package com.nico.library.controller;
 
-import com.nico.library.service.AuthorityService;
+import com.nico.library.service.implementation.AuthorityServiceImpl;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class AuthorityController
 {
-    private final AuthorityService authorityService;
+    private final AuthorityServiceImpl authorityServiceImpl;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-authority")
     public ResponseEntity<?> addAuthority(@RequestParam @Size(max = 30, min = 7) @NotEmpty String newAuthority)
     {
-        return authorityService.addAuthority(newAuthority);
+        return authorityServiceImpl.addAuthority(newAuthority);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{authorityId}")
     public ResponseEntity<?> switchVisibility(@PathVariable("authorityId") @Min(1) byte authorityId)
     {
-        return authorityService.switchVisibility(authorityId);
+        return authorityServiceImpl.switchVisibility(authorityId);
     }
 }

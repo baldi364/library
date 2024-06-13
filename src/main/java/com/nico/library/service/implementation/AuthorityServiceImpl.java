@@ -1,4 +1,4 @@
-package com.nico.library.service;
+package com.nico.library.service.implementation;
 
 import com.nico.library.entity.Authority;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorityService
+public class AuthorityServiceImpl
 {
     private final AuthorityRepository authorityRepository;
 

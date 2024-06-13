@@ -1,7 +1,7 @@
 package com.nico.library.repository;
 
 import com.nico.library.entity.Book;
-import com.nico.library.payload.response.BookResponse;
+import com.nico.library.dto.response.book.BookResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>
 {
-    @Query("SELECT new com.nico.library.payload.response.BookResponse(" +
+    @Query("SELECT new com.nico.library.dto.response.book.BookResponse(" +
             "b.bookId, " +
             "b.title, " +
             "b.author, " +

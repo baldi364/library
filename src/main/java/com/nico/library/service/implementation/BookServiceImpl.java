@@ -1,11 +1,11 @@
-package com.nico.library.service;
+package com.nico.library.service.implementation;
 
 import com.nico.library.entity.Book;
 import com.nico.library.exceptions.custom.BadRequestException;
 import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
-import com.nico.library.payload.request.BookRequest;
-import com.nico.library.payload.response.BookResponse;
+import com.nico.library.dto.request.book.BookRequest;
+import com.nico.library.dto.response.book.BookResponse;
 import com.nico.library.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class BookService
+public class BookServiceImpl
 {
     private final BookRepository bookRepository;
 

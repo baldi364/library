@@ -1,4 +1,4 @@
-package com.nico.library.payload.request;
+package com.nico.library.dto.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;

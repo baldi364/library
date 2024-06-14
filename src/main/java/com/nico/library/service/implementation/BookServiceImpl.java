@@ -86,20 +86,20 @@ public class BookServiceImpl implements BookService {
      * @return una ResponseEntity che conferma l'aggiornamento del libro.
      */
     @Transactional
-    public ResponseEntity<?> updateBookById(BookRequest request, int bookId)
+    public BookResponse updateBookById(BookRequest request, int bookId)
     {
         //trovo prima il libro per id, mi assicuro che esista altrimenti lancio una ResourceNotFoundException
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
+                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
 
-        //una volta trovato setto i parametri da modificare
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setPlot(request.getPlot());
-        book.setGenre(request.getGenre());
-        book.setISBN(request.getISBN());
+        //una volta trovato utilizzo il mapper per aggiornare i parametri del libro esistente
+        bookMapper.updateBookFromRequest(request, book);
 
-        return new ResponseEntity<>("Book with id " + book.getBookId() + " successfully update", HttpStatus.OK);
+        //salvo l'entity aggiornata
+        Book updatedBook = bookRepository.save(book);
+
+        //Restituisco la risposta mappata
+        return bookMapper.asResponse(updatedBook);
     }
 
     /**

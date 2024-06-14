@@ -2,7 +2,6 @@ package com.nico.library.controller;
 
 import com.nico.library.dto.request.book.BookRequest;
 import com.nico.library.dto.response.book.BookResponse;
-import com.nico.library.entity.Book;
 import com.nico.library.service.implementation.BookServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -51,10 +50,11 @@ public class BookController
     //aggiornare libro per id
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-book/{bookId}")
-    public ResponseEntity<?> updateBookById(@RequestBody @Valid BookRequest request,
-                                            @PathVariable("bookId") @Min(1) int bookId)
-    {
-        return bookServiceImpl.updateBookById(request, bookId);
+    public ResponseEntity<BookResponse> updateBookById(
+            @RequestBody @Valid BookRequest request,
+            @PathVariable("bookId") @Min(1) int bookId) {
+        BookResponse response = bookServiceImpl.updateBookById(request, bookId);
+        return ResponseEntity.ok().body(response);
     }
 
     //aggiornare determinati campi del libro

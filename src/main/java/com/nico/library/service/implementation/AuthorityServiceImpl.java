@@ -32,12 +32,11 @@ public class AuthorityServiceImpl implements AuthorityService
     }
 
     @Transactional
-    public ResponseEntity<?> switchVisibility(int id)
+    public void switchVisibility(byte id)
     {
-        Authority a = authorityRepository.findById(id)
+        Authority a = authorityRepository.findById((int) id)
                 .orElseThrow(()-> new ResourceNotFoundException("Authority", "id", id));
 
         a.setVisible(!a.isVisible());
-        return new ResponseEntity<>("Authority updated", HttpStatus.OK);
     }
 }

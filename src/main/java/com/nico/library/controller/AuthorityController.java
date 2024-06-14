@@ -29,9 +29,10 @@ public class AuthorityController
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/{authorityId}")
-    public ResponseEntity<?> switchVisibility(@PathVariable("authorityId") @Min(1) byte authorityId)
+    @PatchMapping("/{authorityId}")
+    public ResponseEntity<String> switchVisibility(@PathVariable("authorityId") @Min(1) byte authorityId)
     {
-        return authorityServiceImpl.switchVisibility(authorityId);
+        authorityServiceImpl.switchVisibility(authorityId);
+        return ResponseEntity.ok("Authority updated");
     }
 }

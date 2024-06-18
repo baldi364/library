@@ -1,5 +1,6 @@
 package com.nico.library.service.implementation;
 
+import com.nico.library.dto.mapper.UserMapper;
 import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
 import com.nico.library.exceptions.custom.BadRequestException;
@@ -9,6 +10,7 @@ import com.nico.library.dto.response.user.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.repository.UserRepository;
 import com.nico.library.security.JwtService;
+import com.nico.library.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,21 +22,21 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl
+public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
     /**
      * Attiva l'account dell'utente corrispondente al token JWT fornito.
      *
      * @param jwt Il token JWT utilizzato per identificare l'utente.
-     * @return Una ResponseEntity che conferma l'attivazione dell'account dell'utente.
      * @throws ResourceNotFoundException Se l'utente corrispondente al token JWT non viene trovato nel sistema.
      */
     @Transactional
-    public ResponseEntity<?> activate(String jwt)
+    public void activate(String jwt)
     {
         // Estraggo il nome utente dal token JWT
         String username = jwtService.extractUsername(jwt);
@@ -42,10 +44,9 @@ public class UserServiceImpl
         // Cerco l'utente nel repository e attivo il suo account se trovato
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        user.setEnabled(true);
 
-        // Restituisco una ResponseEntity che conferma l'attivazione dell'account dell'utente
-        return new ResponseEntity<>("Welcome " + username + ", your account is activated", HttpStatus.OK);
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
     /**
@@ -55,15 +56,14 @@ public class UserServiceImpl
      * @return Una ResponseEntity che contiene il nome utente dell'utente trovato.
      * @throws ResourceNotFoundException Se l'utente corrispondente all'ID fornito non viene trovato nel sistema.
      */
-    public ResponseEntity<?> findUsername(int userId)
+    public String findUsername(int userId)
     {
         // Cerco l'utente nel repository degli utenti utilizzando l'ID fornito
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new ResourceNotFoundException("User", "userId", userId));
 
-        // Ottengo il nome utente dall'utente trovato e lo restituisco come parte della ResponseEntity
-        String username = user.getUsername();
-        return new ResponseEntity<>("Username: " + username, HttpStatus.OK);
+        // Ottengo il nome utente dall'utente trovato e lo restituisco
+        return user.getUsername();
     }
 
     /**
@@ -71,10 +71,10 @@ public class UserServiceImpl
      *
      * @param id          L'ID dell'utente di cui si desidera aggiornare le autorizzazioni.
      * @param authorities Il set delle nuove autorizzazioni da assegnare all'utente.
-     * @return Una ResponseEntity che conferma il successo dell'aggiornamento delle autorizzazioni per l'utente specificato.
      * @throws ResourceNotFoundException Se l'utente corrispondente all'ID fornito non viene trovato nel sistema.
      */
-    public ResponseEntity<?> updateAuthorities(int id, Set<String> authorities)
+    @Transactional
+    public void updateAuthorities(int id, Set<String> authorities)
     {
         // Verifico l'esistenza dell'utente
         User u = userRepository.findById(id)
@@ -90,23 +90,21 @@ public class UserServiceImpl
         //Setto il Set<Authority> su user e salvo
         u.setAuthorities(auths);
         userRepository.save(u);
-        return new ResponseEntity<>("Authorities updated for user " + u.getUsername(), HttpStatus.OK);
     }
 
     /**
      * Ottiene i dettagli dell'utente corrente.
      *
      * @param userDetails Le informazioni sull'utente corrente.
-     * @return Una ResponseEntity contenente i dettagli dell'utente corrente.
+     * @return I dettagli dell'utente corrente.
      */
-    public ResponseEntity<?> getMe(UserDetails userDetails)
+    public UserResponse getMe(UserDetails userDetails)
     {
         if(userDetails == null){
             throw new BadRequestException("No user logged! Please, log in and try again.");
         }
 
-        // Converto le informazioni sull'utente corrente in un oggetto UserResponse
-        UserResponse u = UserResponse.fromUserDetailsToUserResponse((User) userDetails);
-        return new ResponseEntity<>(u,HttpStatus.OK);
+        // Mappo le informazioni sull'utente corrente in un oggetto UserResponse
+        return userMapper.asUserDetailsResponse((User)userDetails);
     }
 }

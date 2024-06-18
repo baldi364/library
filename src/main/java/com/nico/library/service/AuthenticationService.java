@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public interface AuthenticationService {
-
     UserSignUpResponse signUp(SignupRequest request);
 }
 

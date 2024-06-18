@@ -44,7 +44,8 @@ public class BookController
 
     //Trovare un libro per genere
     @GetMapping("/get-book-by-genre/{genre}")
-    public ResponseEntity<List<BookResponse>> getBookByGenre(@PathVariable("genre") @NotBlank @Length(max = 20) String genre)
+    public ResponseEntity<List<BookResponse>> getBookByGenre(
+            @PathVariable("genre") @NotBlank @Length(max = 20) String genre)
     {
         List<BookResponse> responses = bookServiceImpl.getBookByGenre(genre);
         return ResponseEntity.ok(responses);
@@ -53,7 +54,8 @@ public class BookController
     //aggiungere un libro
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-book")
-    public ResponseEntity<BookResponse> addBook(@RequestBody @Valid BookRequest request) {
+    public ResponseEntity<BookResponse> addBook(@RequestBody @Valid BookRequest request)
+    {
         BookResponse response = bookServiceImpl.addBook(request);
         return new ResponseEntity<>(response, CREATED);
     }
@@ -63,7 +65,8 @@ public class BookController
     @PutMapping("/update-book/{bookId}")
     public ResponseEntity<BookResponse> updateBookById(
             @RequestBody @Valid BookRequest request,
-            @PathVariable("bookId") @Min(1) int bookId) {
+            @PathVariable("bookId") @Min(1) int bookId)
+    {
         BookResponse response = bookServiceImpl.updateBookById(request, bookId);
         return ResponseEntity.ok(response);
     }
@@ -71,8 +74,9 @@ public class BookController
     //aggiornare determinati campi del libro con PatchMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/update-book-field/{bookId}")
-    public ResponseEntity<BookResponse> updateBookFieldById(@PathVariable("bookId") @Min(1) int bookId,
-                                                 @RequestBody @Valid BookRequest request)
+    public ResponseEntity<BookResponse> updateBookFieldById(
+            @PathVariable("bookId") @Min(1) int bookId,
+            @RequestBody @Valid BookRequest request)
     {
         BookResponse response = bookServiceImpl.updateBookById(request, bookId);
         return ResponseEntity.ok(response);

@@ -16,16 +16,4 @@ public class UserResponse
     private String username;
     private String email;
     private String authority;
-
-    public static UserResponse fromUserDetailsToUserResponse(User user)
-    {
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getSurname(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getAuthorities().toString()
-        );
-    }
 }

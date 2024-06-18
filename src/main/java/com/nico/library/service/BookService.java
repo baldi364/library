@@ -9,6 +9,7 @@ public interface BookService {
     List<BookResponse> getAvailableBooks();
     BookResponse getBookById(int bookId);
     List<BookResponse> getBookByGenre(String genre);
+    BookResponse updateBookById(BookRequest request, int bookId);
     BookResponse addBook(BookRequest request);
     void deleteBookById(int bookId);
 }

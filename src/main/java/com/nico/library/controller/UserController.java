@@ -1,5 +1,6 @@
 package com.nico.library.controller;
 
+import com.nico.library.dto.response.user.UserResponse;
 import com.nico.library.service.implementation.UserServiceImpl;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -25,29 +28,33 @@ public class UserController
     //Attivare l'utente
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/activate/{jwt}")
-    public ResponseEntity<?> activate(@PathVariable("jwt") @NotBlank String jwt)
+    public ResponseEntity<String> activate(@PathVariable("jwt") @NotBlank String jwt)
     {
-        return userServiceImpl.activate(jwt);
+        userServiceImpl.activate(jwt);
+        return new ResponseEntity<>("Your account is now enabled!", OK);
     }
 
     //Ottenere l'username di un utente
     @GetMapping("/get-username/{userId}")
-    public ResponseEntity<?> getUsername(@PathVariable("userId") @Min(1) int userId)
+    public ResponseEntity<String> getUsername(@PathVariable("userId") @Min(1) int userId)
     {
-        return userServiceImpl.findUsername(userId);
+        String username = userServiceImpl.findUsername(userId);
+        return new ResponseEntity<>(String.format("Username: %s",username), OK);
     }
 
     @GetMapping("get-me")
-    public ResponseEntity<?> getMe(@AuthenticationPrincipal UserDetails userDetails)
+    public ResponseEntity<UserResponse> getMe(@AuthenticationPrincipal UserDetails userDetails)
     {
-        return userServiceImpl.getMe(userDetails);
+        UserResponse response = userServiceImpl.getMe(userDetails);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update_auths/{userId}")
-    public ResponseEntity<?> updateAuths(@PathVariable("userId") @Min(1) int userId,
+    public ResponseEntity<String> updateAuths(@PathVariable("userId") @Min(1) int userId,
                                          @RequestBody @NotEmpty Set<String> authorities)
     {
-        return userServiceImpl.updateAuthorities(userId, authorities);
+        userServiceImpl.updateAuthorities(userId, authorities);
+        return new ResponseEntity<>(String.format("Authorities updated for user with id %d", userId), OK);
     }
 }

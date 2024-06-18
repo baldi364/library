@@ -53,13 +53,13 @@ public class AuthenticationServiceImpl implements AuthenticationService
         Authority a = authorityRepository.findByDefaultAuthorityTrue();
 
         // Costruisce un nuovo oggetto User con le informazioni fornite nella richiesta
-        User user = userMapper.asEntity(request);
+        User user = userMapper.signUpAsEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAuthorities(Collections.singleton(a));
 
         //salva il nuovo utente
         userRepository.save(user);
-        return userMapper.asResponse(user);
+        return userMapper.signUpAsResponse(user);
     }
 
     //Accesso utente

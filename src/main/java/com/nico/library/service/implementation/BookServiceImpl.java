@@ -11,8 +11,6 @@ import com.nico.library.repository.BookRepository;
 import com.nico.library.service.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -65,6 +63,7 @@ public class BookServiceImpl implements BookService {
      * @return la lista di BookResponse in base al genere
      */
     public List<BookResponse> getBookByGenre(String genre) {
+
         //Creo una lista di BookResponse di libri trovati per genere tramite una query.
         List<Book> bookByGenreIgnoreCase = bookRepository.getBookByGenreIgnoreCase(genre);
 
@@ -83,10 +82,11 @@ public class BookServiceImpl implements BookService {
      *
      * @param request l'oggetto BookRequest contenente le informazioni del libro.
      * @param bookId
-     * @return una ResponseEntity che conferma l'aggiornamento del libro.
+     * @return Response mappata.
      */
     @Transactional
     public BookResponse updateBookById(BookRequest request, int bookId) {
+
         //trovo prima il libro per id, mi assicuro che esista altrimenti lancio una ResourceNotFoundException
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
@@ -107,9 +107,10 @@ public class BookServiceImpl implements BookService {
      * Viene semplicemente creato un nuovo libro, i cui attributi vengono recuperati dalla BookRequest.
      *
      * @param request Un oggetto BookRequest contenente le informazioni del libro
-     * @return una ResponseEntity di successo
+     * @return La BookResponse mappata con il libro appena aggiunto
      */
     public BookResponse addBook(BookRequest request) {
+
         //Verifico prima che un libro con lo stesso codice ISBN non sia già presente
         if (bookRepository.findByISBN(request.getISBN()).isPresent()) {
             throw new BadRequestException(String.format("Book with isbn '%s' already present!", request.getISBN()));
@@ -117,8 +118,8 @@ public class BookServiceImpl implements BookService {
 
         //Creo il libro attraverso il mapper
         Book createdBook = bookMapper.asEntity(request);
-
         bookRepository.save(createdBook);
+
         return bookMapper.asResponse(createdBook);
     }
 
@@ -127,7 +128,6 @@ public class BookServiceImpl implements BookService {
      * e procede con l'eliminazione dello stesso.
      *
      * @param bookId l'id del libro da cancellare
-     * @return ResponseEntity di successo.
      */
     @Transactional
     public void deleteBookById(int bookId) {

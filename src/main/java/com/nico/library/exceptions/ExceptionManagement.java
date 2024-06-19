@@ -39,7 +39,10 @@ public class ExceptionManagement
         );
         return new ResponseEntity<>(apiException, notFound);
     }
-    @ExceptionHandler({BadRequestException.class})
+    @ExceptionHandler({
+            BadRequestException.class,
+            BookAlreadyPresentException.class
+    })
     public ResponseEntity<Object> BadRequestExceptionManagement(RuntimeException ex, HttpServletRequest request){
         HttpStatus badRequest = BAD_REQUEST;
         ApiException apiException = new ApiException(

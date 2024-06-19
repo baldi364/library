@@ -16,7 +16,8 @@ public interface UserBookRepository extends JpaRepository<UserBook, UserBookId>
     @Query("SELECT ub " +
            "FROM UserBook ub " +
            "WHERE ub.userBookId.user = :user " +
-           "AND ub.deleteDate IS NULL")
+           "AND ub.deleteDate IS NULL " +
+           "ORDER BY ub.userBookId.book.bookId ASC")
     List<UserBook> findActiveBooksByUser(User user);
 
     @Query("SELECT ub " +

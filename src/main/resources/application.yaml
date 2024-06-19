@@ -43,6 +43,7 @@ logging:
     '[org.hibernate.type.descriptor.sql.BasicBinder]': trace
     '[org.springframework.boot]': info
     #'[org.springframework.security]': DEBUG
+    #'[com.fasterxml.jackson.databind]': DEBUG
 
 spring-doc:
   swagger-ui:

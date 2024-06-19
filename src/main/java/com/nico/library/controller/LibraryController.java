@@ -1,5 +1,6 @@
 package com.nico.library.controller;
 
+import com.nico.library.dto.response.user.UserBookResponse;
 import com.nico.library.service.implementation.UserBookServiceImpl;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +23,10 @@ public class LibraryController
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/get_user_books")
-    public ResponseEntity<?> getUserBooks(@AuthenticationPrincipal UserDetails userDetails)
+    public ResponseEntity<List<UserBookResponse>> getUserBooks(@AuthenticationPrincipal UserDetails userDetails)
     {
-        return userBookServiceImpl.getUserBooks(userDetails);
+        List<UserBookResponse> response = userBookServiceImpl.getUserBooks(userDetails);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")

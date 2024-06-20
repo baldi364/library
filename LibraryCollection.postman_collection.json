@@ -1,0 +1,595 @@
+{
+	"info": {
+		"_postman_id": "eaf96192-ea97-44b1-bb3a-6014ea019700",
+		"name": "LibraryCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29589161"
+	},
+	"item": [
+		{
+			"name": "BookEndpoints",
+			"item": [
+				{
+					"name": "GetBooks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/books/get-books",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"get-books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/books/get-book-by-id/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"get-book-by-id",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookByGenre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/books/get-book-by-genre/cristo",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"get-book-by-genre",
+								"cristo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE4NjE2ODk4LCJleHAiOjE3MTg3MDMyOTh9.ZtqDU2YsnXUdjX5hP8FPhc5joNq4sWOrMQROmQfNqQA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"abc\",\r\n    \"author\":\"abc\",\r\n    \"plot\":\"abc\",\r\n    \"genre\":\"abc\",\r\n    \"ISBN\":\"3847502748593\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/books/add-book",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"add-book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBookFieldById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE4NjE5NzkzLCJleHAiOjE3MTg3MDYxOTN9.QTbqoXsXjZYhv9cVS9cKlynj5h9d6GxG6Ht4OADUUdk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ISBN\":\"3847502748593\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/books/update-book-field/21",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"update-book-field",
+								"21"
+							],
+							"query": [
+								{
+									"key": "fieldToUpdate",
+									"value": "ISBN",
+									"disabled": true
+								},
+								{
+									"key": "ISBN",
+									"value": "2739485763293",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBookById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE4NjE4OTg3LCJleHAiOjE3MTg3MDUzODd9.Nu70OzYcgzZtORHyg4i0ShFbU24_Bizg7WU5RI88fag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Maze Runner - Il Labirinto\",\r\n    \"author\":\"James Dashner\",\r\n    \"plot\":\"Thomas si ritrova al centro di un gigante labirinto insieme ad altri ragazzi. Per evadere dovranno scontrarsi con strani esseri che popolano il Labirinto, a cui mai nessuno è sopravvissuto.t\",\r\n    \"genre\":\"Fantascienza\",\r\n    \"ISBN\":\"3847502748593\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/books/update-book/19",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"update-book",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBookById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE3NzQ4NDgzLCJleHAiOjE3MTc4MzQ4ODN9.y6YKuTVW4ziXPbF1shE5v4o5IuoM93RRmw8W3ZeB2hw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/books/delete-book/17",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"books",
+								"delete-book",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuthEndpoints",
+			"item": [
+				{
+					"name": "SignUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"pippo\",\r\n    \"surname\":\"pippo\",\r\n    \"username\":\"pippo\",\r\n    \"email\":\"pippo@gmail.com\",\r\n    \"password\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/auths/signup",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auths",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"marco\",\r\n    \"password\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/auths/signin",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auths",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuthorityEndpoints",
+			"item": [
+				{
+					"name": "AddAuthority",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE4MzA0NzMzLCJleHAiOjE3MTgzOTExMzN9.FmWen7yEmB4rIDhkWz5kI11r1Q2WHiGVWvPqPWKQg4Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"authorityName\":\"ROLE_PIPPO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/ath/add-authority",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ath",
+								"add-authority"
+							],
+							"query": [
+								{
+									"key": "newAuthority",
+									"value": "ROLE_PIPPO",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SwitchVisibility",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE4Mzc2NjU0LCJleHAiOjE3MTg0NjMwNTR9.t-kpRbAbrX31castMeV8_8BSp450sdGJrp7O5x3lDLU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/ath/5",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ath",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserEndpoints",
+			"item": [
+				{
+					"name": "GetUsernameById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/user/get-username/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"get-username",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetMyDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6Im1hcmNvIiwiaWF0IjoxNzE4ODkzMTkyLCJleHAiOjE3MTg5Nzk1OTJ9.Fb4eE-EsRqOblGZjBlheKUnqJYltkIoRzSJkgKmgDag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/user/get-me",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"get-me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUserAuth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwiaWF0IjoxNzE3NzUyNTQ3LCJleHAiOjE3MTc4Mzg5NDd9.Jj7mapzd_d6ewr2x_MvtQ0hmzALQxscUqJ5NwYqLK6c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    \"ROLE_ADMIN\"\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/user/update_auths/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"update_auths",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserBookEndpoints",
+			"item": [
+				{
+					"name": "GetUserBooks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6Im1hcmNvIiwiaWF0IjoxNzE4ODkzMTkyLCJleHAiOjE3MTg5Nzk1OTJ9.Fb4eE-EsRqOblGZjBlheKUnqJYltkIoRzSJkgKmgDag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/library/get_user_books",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"library",
+								"get_user_books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddUserBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6Im1hcmNvIiwiaWF0IjoxNzE4ODkzMTkyLCJleHAiOjE3MTg5Nzk1OTJ9.Fb4eE-EsRqOblGZjBlheKUnqJYltkIoRzSJkgKmgDag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/library/add_user_book/5",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"library",
+								"add_user_book",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6Im1hcmNvIiwiaWF0IjoxNzE4ODkzMTkyLCJleHAiOjE3MTg5Nzk1OTJ9.Fb4eE-EsRqOblGZjBlheKUnqJYltkIoRzSJkgKmgDag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/library/delete_user_book/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"library",
+								"delete_user_book",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBookReadCount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6Im1hcmNvIiwiaWF0IjoxNzE4ODkzMTkyLCJleHAiOjE3MTg5Nzk1OTJ9.Fb4eE-EsRqOblGZjBlheKUnqJYltkIoRzSJkgKmgDag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/library/update_book_read_count/1?readCount=2",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"library",
+								"update_book_read_count",
+								"1"
+							],
+							"query": [
+								{
+									"key": "readCount",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -2,8 +2,10 @@ package com.nico.library.controller;
 
 import com.nico.library.dto.response.user.UserBookResponse;
 import com.nico.library.service.implementation.UserBookServiceImpl;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,10 +35,11 @@ public class LibraryController
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @PostMapping("/add_user_book/{bookId}")
-    public ResponseEntity<?>addUserBook(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<UserBookResponse>addUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                         @PathVariable("bookId") @Min(1) int bookId)
     {
-        return userBookServiceImpl.addUserBook(userDetails, bookId);
+        UserBookResponse response = userBookServiceImpl.addUserBook(userDetails, bookId);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -42,16 +47,19 @@ public class LibraryController
     public ResponseEntity<?> deleteUserBook(@AuthenticationPrincipal UserDetails userDetails,
                                             @PathVariable("bookId") @Min(1) int bookId)
     {
-        return userBookServiceImpl.deleteUserBook(userDetails, bookId);
+        userBookServiceImpl.deleteUserBook(userDetails, bookId);
+        return new ResponseEntity<>(String.format("Book with id '%d' successfully deleted from %s's library", bookId, userDetails.getUsername()), OK);
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @PutMapping("/update_book_read_count/{bookId}")
-    public ResponseEntity<?> updateBookReadCount(@AuthenticationPrincipal UserDetails userDetails,
-                                                 @PathVariable("bookId") @Min(1) int bookId,
-                                                 @RequestParam @Min(0) int readCount)
+    public ResponseEntity<UserBookResponse> updateBookReadCount(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("bookId") @Min(1) int bookId,
+            @RequestParam @Valid @Min(value = 0, message = "readCount must be positive and a valid number") int readCount)
     {
-        return userBookServiceImpl.updateBookReadCount(userDetails, bookId, readCount);
+        UserBookResponse response = userBookServiceImpl.updateBookReadCount(userDetails, bookId, readCount);
+        return ResponseEntity.ok(response);
     }
 
 

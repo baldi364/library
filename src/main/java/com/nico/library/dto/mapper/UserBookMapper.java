@@ -1,6 +1,8 @@
 package com.nico.library.dto.mapper;
 
 import com.nico.library.dto.response.user.UserBookResponse;
+import com.nico.library.entity.Book;
+import com.nico.library.entity.User;
 import com.nico.library.entity.UserBook;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,4 +21,6 @@ public interface UserBookMapper {
     @Mapping(source = "readCount", target = "readCount")
     UserBookResponse asResponse(UserBook userBook);
     List<UserBookResponse> asResponseList(List<UserBook> userBook);
+    @Mapping(target = "userBookId", expression = "java(new UserBookId(user, book))")
+    UserBook asEntity (User user, Book book);
 }

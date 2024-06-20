@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,7 +42,8 @@ public class ExceptionManagement
     }
     @ExceptionHandler({
             BadRequestException.class,
-            BookAlreadyPresentException.class
+            BookAlreadyPresentException.class,
+            MethodArgumentTypeMismatchException.class
     })
     public ResponseEntity<Object> BadRequestExceptionManagement(RuntimeException ex, HttpServletRequest request){
         HttpStatus badRequest = BAD_REQUEST;
@@ -69,7 +71,6 @@ public class ExceptionManagement
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
-    @ResponseStatus(BAD_REQUEST)
     public ResponseEntity<?> constraintViolationExceptionManagement(ConstraintViolationException ex)
     {
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();

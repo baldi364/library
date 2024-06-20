@@ -33,66 +33,64 @@ public class AuthenticationServiceImpl implements AuthenticationService
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    //Registrazione utente
+    //User Registration
 
     /**
-     * Gestisce il processo di registrazione di un nuovo utente nell'applicazione.
+     * Manages the process of registering a new user in the application.
      *
-     * @param request L'oggetto SignupRequest contenente le informazioni del nuovo utente da registrare.
-     * @return Una ResponseEntity contenente un messaggio di conferma o di errore a seconda dell'esito della registrazione.
+     * @param request SignupRequest object containing the information of the new user to register.
+     * @return the mapped UserDTO information of the registered user.
      */
     public UserSignUpResponse signUp(SignupRequest request)
     {
-        // Verifica se l'username o l'email sono già in uso
+        // Control if email and username are already in use
         if (userRepository.existsByEmailOrUsername(request.getEmail(), request.getUsername()))
         {
             throw new BadRequestException("Username or Email already in use");
         }
 
-        // Recupera l'autorità predefinita per i nuovi utenti
+        // Retrieves the default authority for new users
         Authority a = authorityRepository.findByDefaultAuthorityTrue();
 
-        // Costruisce un nuovo oggetto User con le informazioni fornite nella richiesta
+        // Build a new User with the information provided in the request
         User user = userMapper.signUpAsEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAuthorities(Collections.singleton(a));
 
-        //salva il nuovo utente
+
         userRepository.save(user);
         return userMapper.signUpAsResponse(user);
     }
 
-    //Accesso utente
+    //User Signin
 
     /**
-     * Gestisce il processo di accesso dell'utente all'applicazione.
+     * Manages the user login process to the application.
      *
-     * @param request L'oggetto SigninRequest contenente le credenziali di accesso dell'utente.
-     * @return Una ResponseEntity contenente un oggetto AuthenticationResponse con le informazioni dell'utente e il token JWT generato.
-     * @throws org.springframework.security.authentication.BadCredentialsException Se le credenziali fornite non corrispondono a un utente valido.
+     * @param request SigninRequest containing the user's login credentials.
+     * @return ResponseEntity containing an AuthenticationResponse object with user information and the generated JWT token.
+     * @throws BadCredentialsException if the credentials provided do not match a valid user.
      */
     public ResponseEntity<?> signIn(SigninRequest request)
     {
-        // Cerca l'utente nel repository tramite il nome utente fornito
+        // Search for the user in the repository by the username provided
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(()-> new org.springframework.security.authentication.BadCredentialsException("Bad credentials"));
 
-        // Confronta la password fornita con quella memorizzata per l'utente
+        // Compare the two passwords
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
         {
             throw new BadCredentialsException("Bad credentials");
         }
 
-        // Abilita l'utente se non è già abilitato
         if(!user.isEnabled())
         {
             user.setEnabled(true);
         }
 
-        // Genera un token JWT per l'utente
+        // Generate a new JWT token
         String jwtToken = jwtService.generateToken(user, Math.toIntExact(user.getUserId()));
 
-        // Restituisce una ResponseEntity contenente le informazioni dell'utente e il token JWT
         return new ResponseEntity<>(AuthenticationResponse.builder()
                 .id(Math.toIntExact(user.getUserId()))
                 .name(user.getName())
@@ -106,10 +104,11 @@ public class AuthenticationServiceImpl implements AuthenticationService
     }
 
     /**
-     * Estrae le stringhe delle autorizzazioni da una collezione di oggetti GrantedAuthority.
+     * Extracts authentications strings from a collection of GrantedAuthority objects.
      *
-     * @param auths Una collezione di oggetti GrantedAuthority che rappresentano le autorizzazioni dell'utente.
-     * @return Un array di stringhe di autorizzazioni estratte dalla collezione fornita.
+     * @param auths A collection of GrantedAuthority objects that represent the user's permissions.
+     * @return An array of Strings with the permissions extracted from the provided collection.
+     *
      */
     private String[] authorities(Collection<? extends GrantedAuthority> auths)
     {
@@ -117,6 +116,4 @@ public class AuthenticationServiceImpl implements AuthenticationService
                 .map(GrantedAuthority::getAuthority)
                 .toArray(String[]::new);
     }
-
-
 }

@@ -10,8 +10,6 @@ import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.service.AuthorityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +20,16 @@ public class AuthorityServiceImpl implements AuthorityService
     private final AuthorityMapper authorityMapper;
 
     public AuthorityResponse addAuthority(AuthorityRequest request) {
-        if(authorityRepository.existsByAuthorityName(request.getAuthorityName()))
-            throw new BadRequestException("Authority already present");
+
+        String authorityName = request.getAuthorityName().toUpperCase();
+
+        // Check if role is valid
+        if(!isValidAuthority(authorityName)){
+            throw new BadRequestException(String.format("Authority '%s' is invalid, it must starts with 'ROLE_'", authorityName));
+        }
+
+        if(authorityRepository.existsByAuthorityName(authorityName))
+            throw new BadRequestException(String.format("Authority '%s' already present", authorityName));
 
         Authority authority = authorityMapper.asEntity(request);
         Authority savedAuthority = authorityRepository.save(authority);
@@ -38,5 +44,12 @@ public class AuthorityServiceImpl implements AuthorityService
                 .orElseThrow(()-> new ResourceNotFoundException("Authority", "id", id));
 
         a.setVisible(!a.isVisible());
+    }
+
+    public boolean isValidAuthority(String authorityName){
+        if(authorityName == null || authorityName.trim().isEmpty()){
+            throw new BadRequestException("Please, enter an authority!");
+        }
+        return authorityName.startsWith("ROLE_");
     }
 }

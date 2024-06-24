@@ -5,16 +5,19 @@ import com.nico.library.dto.request.authentication.SignupRequest;
 import com.nico.library.dto.response.user.UserSignUpResponse;
 import com.nico.library.service.implementation.AuthenticationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/auths")
@@ -30,9 +33,12 @@ public class AuthController {
             responses = {
                     @ApiResponse(
                             description = "User successfully created",
-                            responseCode = "201"),
+                            responseCode = "201",
+                            content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserSignUpResponse.class))
+                    ),
                     @ApiResponse(
-                            description = "Bad Request",
+                            description = "Bad Request - Username or email already in use",
                             responseCode = "400"),
                     @ApiResponse(
                             description = "Something went wrong",
@@ -43,7 +49,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<UserSignUpResponse> signUp(@RequestBody @Valid SignupRequest request) {
         UserSignUpResponse response = authenticationServiceImpl.signUp(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(CREATED).body(response);
     }
 
     @Operation(
@@ -52,13 +58,10 @@ public class AuthController {
             responses = {
                     @ApiResponse(
                             description = "User successfully authenticated",
-                            responseCode = "201"),
+                            responseCode = "200"),
                     @ApiResponse(
-                            description = "Bad Request",
-                            responseCode = "400"),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized"),
+                            description = "Unauthorized - Bad Credentials",
+                            responseCode = "401"),
                     @ApiResponse(
                             description = "Something went wrong",
                             responseCode = "500"

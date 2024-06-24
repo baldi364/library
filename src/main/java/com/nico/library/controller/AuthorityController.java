@@ -5,9 +5,8 @@ import com.nico.library.dto.response.authority.AuthorityResponse;
 import com.nico.library.service.implementation.AuthorityServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +29,7 @@ public class AuthorityController
                             description = "Authority successfully added",
                             responseCode = "200"),
                     @ApiResponse(
-                            description = "Bad Request",
+                            description = "Bad Request - Invalid authority",
                             responseCode = "400"),
                     @ApiResponse(
                             description = "Something went wrong",
@@ -40,7 +39,7 @@ public class AuthorityController
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add-authority")
-    public ResponseEntity<AuthorityResponse> addAuthority(@RequestBody AuthorityRequest request)
+    public ResponseEntity<AuthorityResponse> addAuthority(@RequestBody @Valid AuthorityRequest request)
     {
         AuthorityResponse response = authorityServiceImpl.addAuthority(request);
         return ResponseEntity.ok().body(response);
@@ -54,7 +53,7 @@ public class AuthorityController
                             description = "Authority visibility successfully switched",
                             responseCode = "200"),
                     @ApiResponse(
-                            description = "Not found",
+                            description = "Authority not found",
                             responseCode = "404"),
                     @ApiResponse(
                             description = "Something went wrong",

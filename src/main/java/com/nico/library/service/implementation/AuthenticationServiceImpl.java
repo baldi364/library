@@ -7,6 +7,7 @@ import com.nico.library.entity.User;
 import com.nico.library.dto.request.authentication.SigninRequest;
 import com.nico.library.dto.request.authentication.SignupRequest;
 import com.nico.library.dto.response.authentication.AuthenticationResponse;
+import com.nico.library.exceptions.custom.BadCredentialsException;
 import com.nico.library.exceptions.custom.BadRequestException;
 import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.repository.UserRepository;
@@ -15,7 +16,6 @@ import com.nico.library.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,12 +75,12 @@ public class AuthenticationServiceImpl implements AuthenticationService
     {
         // Search for the user in the repository by the username provided
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(()-> new org.springframework.security.authentication.BadCredentialsException("Bad credentials"));
+                .orElseThrow(BadCredentialsException::new);
 
         // Compare the two passwords
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
         {
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException();
         }
 
         if(!user.isEnabled())

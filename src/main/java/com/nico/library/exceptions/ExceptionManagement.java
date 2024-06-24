@@ -93,6 +93,6 @@ public class ExceptionManagement
     @ExceptionHandler({BadCredentialsException.class})
     public ResponseEntity<?> BadCredentialsExceptionManagement(BadCredentialsException ex)
     {
-        return new ResponseEntity<>(ex.getMessage(), INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ex.getMessage(), UNAUTHORIZED);
     }
 }

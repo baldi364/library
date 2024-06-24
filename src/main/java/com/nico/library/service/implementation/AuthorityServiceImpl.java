@@ -47,7 +47,7 @@ public class AuthorityServiceImpl implements AuthorityService
     }
 
     public boolean isValidAuthority(String authorityName){
-        if(authorityName == null || authorityName.trim().isEmpty()){
+        if(authorityName == null || authorityName.isBlank()){
             throw new BadRequestException("Please, enter an authority!");
         }
         return authorityName.startsWith("ROLE_");

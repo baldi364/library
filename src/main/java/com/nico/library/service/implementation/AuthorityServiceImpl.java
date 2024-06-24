@@ -19,6 +19,13 @@ public class AuthorityServiceImpl implements AuthorityService
     private final AuthorityRepository authorityRepository;
     private final AuthorityMapper authorityMapper;
 
+    /**
+     * Adds a new authority to the system based on the provided request.
+     *
+     * @param request AuthorityRequest object containing the name of the authority to add.
+     * @return AuthorityResponse object containing the name of the added authority.
+     * @throws BadRequestException if the authority name is invalid or already exists.
+     */
     public AuthorityResponse addAuthority(AuthorityRequest request) {
 
         String authorityName = request.getAuthorityName().toUpperCase();
@@ -37,6 +44,12 @@ public class AuthorityServiceImpl implements AuthorityService
         return authorityMapper.asResponse(savedAuthority);
     }
 
+    /**
+     * Toggles the visibility of the authority identified by the provided ID.
+     *
+     * @param id The ID of the authority whose visibility is to be toggled.
+     * @throws ResourceNotFoundException if no authority is found with the provided ID.
+     */
     @Transactional
     public void switchVisibility(byte id)
     {
@@ -46,6 +59,14 @@ public class AuthorityServiceImpl implements AuthorityService
         a.setVisible(!a.isVisible());
     }
 
+    /**
+     * Checks if the provided authority name is valid.
+     * An authority name is considered valid if it is not null, not blank, and starts with 'ROLE_'.
+     *
+     * @param authorityName The authority name to validate.
+     * @return true if the authority name is valid, false otherwise.
+     * @throws BadRequestException if the authority name is null or blank.
+     */
     public boolean isValidAuthority(String authorityName){
         if(authorityName == null || authorityName.isBlank()){
             throw new BadRequestException("Please, enter an authority!");

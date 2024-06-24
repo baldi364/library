@@ -9,7 +9,6 @@ import java.util.Set;
 @Repository
 public interface AuthorityRepository extends JpaRepository<Authority, Integer>
 {
-
     boolean existsByAuthorityName(String newAuthority);
     Authority findByDefaultAuthorityTrue();
     Set<Authority> findByVisibleTrueAndAuthorityNameIn(Set<String> authorities);

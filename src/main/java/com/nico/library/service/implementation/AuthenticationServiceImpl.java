@@ -40,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService
      *
      * @param request SignupRequest object containing the information of the new user to register.
      * @return the mapped UserDTO information of the registered user.
+     * @throws BadRequestException If the username or email is already in use.
      */
     public UserSignUpResponse signUp(SignupRequest request)
     {

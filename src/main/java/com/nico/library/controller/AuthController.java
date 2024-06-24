@@ -2,6 +2,7 @@ package com.nico.library.controller;
 
 import com.nico.library.dto.request.authentication.SigninRequest;
 import com.nico.library.dto.request.authentication.SignupRequest;
+import com.nico.library.dto.response.authentication.AuthenticationResponse;
 import com.nico.library.dto.response.user.UserSignUpResponse;
 import com.nico.library.service.implementation.AuthenticationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +29,8 @@ public class AuthController {
     private final AuthenticationServiceImpl authenticationServiceImpl;
 
     @Operation(
-            summary = "POST ENDPOINT FOR USER SIGNUP",
-            description = "Register a new user",
+            summary = "POST endpoint to register a user",
+            description = "Register a new user by providing valid fields. The request must contain a unique username and email, along with other required details.",
             responses = {
                     @ApiResponse(
                             description = "User successfully created",
@@ -39,10 +40,13 @@ public class AuthController {
                     ),
                     @ApiResponse(
                             description = "Bad Request - Username or email already in use",
-                            responseCode = "400"),
+                            responseCode = "400",
+                            content = @Content(mediaType = "application/json")
+                    ),
                     @ApiResponse(
-                            description = "Something went wrong",
-                            responseCode = "500"
+                            description = "Internal Server Error",
+                            responseCode = "500",
+                            content = @Content(mediaType = "application/json")
                     )
             }
     )
@@ -53,18 +57,24 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "POST ENDPOINT FOR USER SIGNIN",
-            description = "Authenticate a user and provide a JWT token.",
+            summary = "POST endpoint for user signin",
+            description = "Authenticate a user by providing a valid username and password. On successful authentication, a JWT token is returned.",
             responses = {
                     @ApiResponse(
                             description = "User successfully authenticated",
-                            responseCode = "200"),
+                            responseCode = "200",
+                            content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthenticationResponse.class))
+                    ),
                     @ApiResponse(
                             description = "Unauthorized - Bad Credentials",
-                            responseCode = "401"),
+                            responseCode = "401",
+                            content = @Content(mediaType = "application/json")
+                    ),
                     @ApiResponse(
-                            description = "Something went wrong",
-                            responseCode = "500"
+                            description = "Internal server error",
+                            responseCode = "500",
+                            content = @Content(mediaType = "application/json")
                     )
             }
     )

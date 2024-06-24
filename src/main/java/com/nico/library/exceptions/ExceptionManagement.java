@@ -27,6 +27,7 @@ public class ExceptionManagement
 {
     @ExceptionHandler({
             EmptyListException.class,
+            EmptyAuthoritiesException.class,
             ResourceNotFoundException.class
     })
     public ResponseEntity<Object> NotFoundExceptionManagement(RuntimeException ex, HttpServletRequest request)

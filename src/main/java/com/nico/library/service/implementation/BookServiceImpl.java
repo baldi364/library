@@ -12,43 +12,53 @@ import com.nico.library.service.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
+
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
     /**
-     * Il metodo restituisce i libri disponibili all'interno della libreria.
-     * Trova i libri tramite il metodo findAll() della Repository, che vengono inseriti in una List.
+     * Retrieves all available books.
      *
-     * @return la lista dei libri disponibili
+     * <p>
+     * This method finds all available books through a findAll() query and returns a List of {@link BookResponse}.
+     * If no books are found, throws a {@link EmptyListException}.
+     * </p>
+     * @return a List of {@link BookResponse}
+     * @throws EmptyListException if no books are found.
      */
     public List<BookResponse> getAvailableBooks() {
-        //ottengo prima la lista di libri
+
         List<Book> bookList = bookRepository.findAll();
 
-        //se la lista è vuota, lancio un messaggio di errore
         if (bookList.isEmpty()) {
             throw new EmptyListException("books");
         }
 
-        // Utilizzo il mapper per convertire l'entità Book in un DTO BookResponse
         return bookMapper.asResponseList(bookList);
     }
 
 
     /**
-     * Questo metodo restituisce il libro trovato per id.
-     * Vengono utilizzati gli Optional per la gestione eventualmente del libro non trovato.
+     * Returns a specified book.
      *
-     * @param bookId l'id del libro
-     * @return il libro trovato per ID
+     *<p>
+     *This method retrieves a book by its unique identifier from the repository.
+     *If no book is found, it throws a {@link ResourceNotFoundException}.
+     *</p>
+     *
+     * @param bookId the unique identifier of the book you want to find.
+     * @return  a {@link BookResponse} representing the found book.
+     * @throws ResourceNotFoundException if no book with the specified ID is found.
      */
     public BookResponse getBookById(int bookId) {
-        //utilizzo optional per gestire una query che potrebbe ritornarmi un oggetto Book null
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
 
@@ -56,23 +66,26 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Questo metodo restituisce una lista di libri trovati per genere.
-     * Viene creata una lista di BookResponse popolata attraverso una query JPQL e restituita in formato JSON.
+     * Returns a list of books of a specific genre.
      *
-     * @param genre l'attributo per cui cercare
-     * @return la lista di BookResponse in base al genere
+     *<p>
+     *This method retrieves a list of books by its genre from the repository.
+     *If no book is found, the method throws a {@link ResourceNotFoundException}.
+     *</p>
+     *
+     * @param genre the specified genre of the books you want to find.
+     * @return  a {@link BookResponse} representing the found books.
+     * @throws ResourceNotFoundException if no book with the specified genre is found.
      */
     public List<BookResponse> getBookByGenre(String genre) {
 
-        //Creo una lista di BookResponse di libri trovati per genere tramite una query.
+        //A list of BookResponse found by genre ignoring case
         List<Book> bookByGenreIgnoreCase = bookRepository.getBookByGenreIgnoreCase(genre);
 
-        //Se la lista è vuota significa che non ho trovato nessun libro e lancio un messaggio di errore.
         if (bookByGenreIgnoreCase.isEmpty()) {
             throw new ResourceNotFoundException("Books", "genre", genre);
         }
 
-        //Altrimenti restituisco la lista di libri trovati per genere utilizzando il mapper
         return bookMapper.asResponseList(bookByGenreIgnoreCase);
     }
 
@@ -87,36 +100,43 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookResponse updateBookById(BookRequest request, int bookId) {
 
-        //trovo prima il libro per id, mi assicuro che esista altrimenti lancio una ResourceNotFoundException
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
 
         //una volta trovato utilizzo il mapper per aggiornare i parametri del libro esistente
         bookMapper.updateBookFromRequest(request, book);
 
-        //salvo l'entity aggiornata
         Book updatedBook = bookRepository.save(book);
-
-        //Restituisco la risposta mappata
         return bookMapper.asResponse(updatedBook);
     }
 
 
     /**
-     * Questo metodo permette di aggiungere un nuovo libro al DB principale.
-     * Viene semplicemente creato un nuovo libro, i cui attributi vengono recuperati dalla BookRequest.
+     * Adds a new book to the repository.
      *
-     * @param request Un oggetto BookRequest contenente le informazioni del libro
-     * @return La BookResponse mappata con il libro appena aggiunto
+     * <p>
+     * This method first checks if the provided ISBN is at least 13 characters long and contains only numeric digits.
+     * If the ISBN is invalid, a {@link BadRequestException} is thrown. It then checks
+     * if a book with the same ISBN already exists in the repository. If it does, a
+     * {@link BadRequestException} is thrown. If both checks pass, the book is saved
+     * to the repository and a {@link BookResponse} is returned.
+     * </p>
+     *
+     * @param request the {@link BookRequest} containing the details of the book to be added.
+     * @return a {@link BookResponse} containing the details of the added book.
+     * @throws BadRequestException if the ISBN is invalid or if a book with the same ISBN already exists.
      */
     public BookResponse addBook(BookRequest request) {
 
-        //Verifico prima che un libro con lo stesso codice ISBN non sia già presente
+        if(!isValidISBN(request.getISBN())){
+            throw new BadRequestException(String.format("Invalid ISBN '%s': it must be at least 13 digits long and contain only digits.", request.getISBN()));
+        }
+
         if (bookRepository.findByISBN(request.getISBN()).isPresent()) {
             throw new BadRequestException(String.format("Book with isbn '%s' already present!", request.getISBN()));
         }
 
-        //Creo il libro attraverso il mapper
         Book createdBook = bookMapper.asEntity(request);
         bookRepository.save(createdBook);
 
@@ -136,4 +156,18 @@ public class BookServiceImpl implements BookService {
 
         bookRepository.deleteById(bookId);
     }
+
+    /**
+     * Verifies that the given ISBN is at least 13 characters long and contains only numeric digits.
+     *
+     * @param ISBN the ISBN string to validate.
+     * @return true if the ISBN is at least 13 characters long and contains only digits, false otherwise.
+     */
+    public boolean isValidISBN(String ISBN){
+        if(ISBN.length() < 13){
+            return false;
+        }
+        return ISBN.chars().allMatch(Character::isDigit);
+    }
+
 }

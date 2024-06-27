@@ -80,13 +80,13 @@ public class UserServiceImpl implements UserService {
      * <p>
      * This method searches for a user by their unique ID and sets the new authorities provided.
      * If the user is not found, a {@link ResourceNotFoundException} is thrown.
-     * Also, an {@link EmptyListException} is thrown if no authorities are found.
+     * Also, an {@link EmptyAuthoritiesException} is thrown if no authorities are found.
      * </p>
      *
      * @param userId      the unique identifier of the user whose authorities you want to update.
      * @param authorities the set of new authorities to assign to the user.
      * @throws ResourceNotFoundException if no user with the specified ID is found.
-     * @throws EmptyListException if no authorities are found.
+     * @throws EmptyAuthoritiesException if no authorities are found.
      */
     @Transactional
     public void updateAuthorities(int userId, Set<String> authorities) {

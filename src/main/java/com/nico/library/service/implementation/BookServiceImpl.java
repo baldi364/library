@@ -89,21 +89,26 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Questo metodo prende come parametro una BookRequest con i parametri da aggiornare e l'ID del libro corrispondente.
-     * Una volta trovato il libro, aggiorna tutti o parte degli attributi del libro
+     * Updates a book's attributes based on the provided {@link BookRequest} and book ID.
+     * <p>
+     * This method finds the book by its unique identifier (bookId) and updates
+     * its attributes with the values provided in the {@link BookRequest}.
+     * If the book is not found, a {@link ResourceNotFoundException} is thrown.
+     * </p>
      *
-     * @param request l'oggetto BookRequest contenente le informazioni del libro.
-     * @param bookId
-     * @return Response mappata.
+     * @param request the {@link BookRequest} object containing the book's updated information.
+     * @param bookId the unique identifier of the book to be updated.
+     * @return a {@link BookResponse} object containing the updated book information.
+     * @throws ResourceNotFoundException if no book with the specified ID is found.
      */
     @Transactional
     public BookResponse updateBookById(BookRequest request, int bookId) {
 
-
+        //find book by id
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
 
-        //una volta trovato utilizzo il mapper per aggiornare i parametri del libro esistente
+        // once found, use the mapper to update the existing book's attributes
         bookMapper.updateBookFromRequest(request, book);
 
         Book updatedBook = bookRepository.save(book);
@@ -143,10 +148,14 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Questo metodo prende come parametro l'id del libro da eliminare, controlla che l'id del libro esista
-     * e procede con l'eliminazione dello stesso.
+     * Deletes a book based on its unique identifier (bookId).
+     * <p>
+     * This method finds the book by its unique identifier and deletes it from the repository.
+     * If the book is not found, a {@link ResourceNotFoundException} is thrown.
+     * </p>
      *
-     * @param bookId l'id del libro da cancellare
+     * @param bookId the unique identifier of the book to be deleted.
+     * @throws ResourceNotFoundException if no book with the specified ID is found.
      */
     @Transactional
     public void deleteBookById(int bookId) {
@@ -168,5 +177,4 @@ public class BookServiceImpl implements BookService {
         }
         return ISBN.chars().allMatch(Character::isDigit);
     }
-
 }

@@ -43,7 +43,6 @@ public class BookServiceImpl implements BookService {
         return bookMapper.asResponseList(bookList);
     }
 
-
     /**
      * Returns a specified book.
      *
@@ -114,7 +113,6 @@ public class BookServiceImpl implements BookService {
         Book updatedBook = bookRepository.save(book);
         return bookMapper.asResponse(updatedBook);
     }
-
 
     /**
      * Adds a new book to the repository.

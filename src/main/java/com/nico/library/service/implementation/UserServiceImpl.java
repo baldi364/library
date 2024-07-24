@@ -5,7 +5,6 @@ import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
 import com.nico.library.exceptions.custom.BadRequestException;
 import com.nico.library.exceptions.custom.EmptyAuthoritiesException;
-import com.nico.library.exceptions.custom.EmptyListException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.dto.response.user.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
@@ -14,12 +13,9 @@ import com.nico.library.security.JwtService;
 import com.nico.library.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 

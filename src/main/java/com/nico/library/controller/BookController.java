@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -147,7 +146,7 @@ public class BookController {
     }
 
     @Operation(
-            summary = "PUT ENDPOINT TO UPDATE A BOOK BY ITS ID",
+            summary = "PUT endpoint to update a book by its id",
             description = "Updates existing book by its ID in the library",
             responses = {
                     @ApiResponse(
@@ -178,7 +177,7 @@ public class BookController {
     }
 
     @Operation(
-            summary = "PATCH ENDPOINT TO UPDATE A BOOK'S FIELD BY ITS ID",
+            summary = "PATCH endpoint to update a book0s filed by its id",
             description = "Updates an existing book by its ID in the library. This action can only be performed by an admin.",
             responses = {
                     @ApiResponse(
@@ -210,7 +209,7 @@ public class BookController {
 
 
     @Operation(
-            summary = "DELETE ENDPOINT TO DELETE A BOOK BY ITS ID",
+            summary = "DELETE endpoint to delete a book by its id",
             description = "Delete an existing book by its ID from the library",
             responses = {
                     @ApiResponse(

@@ -14,8 +14,6 @@ import com.nico.library.repository.UserRepository;
 import com.nico.library.service.UserBookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -33,25 +31,33 @@ public class UserBookServiceImpl implements UserBookService {
     private final UserBookMapper userBookMapper;
 
     /**
-     * Questo metodo aggiunge un libro alla libreria di un utente.
+     * Adds a book to the library of an authenticated user.
      *
-     * @param userDetails Le informazioni dell'utente autenticato.
-     * @param bookId      L'ID del libro da aggiungere alla libreria.
-     * @return Una UserBookResponse mappata, con il libro aggiunto
-     * @throws ResourceNotFoundException Se l'utente o il libro specificato non esistono nel sistema.
+     * <p>
+     * This method retrieves the authenticated user and the specified book by their IDs.
+     * If either the user or the book is not found, a {@link ResourceNotFoundException} is thrown.
+     * It also checks if the book is already present in the user's library and, if so, throws a {@link BookAlreadyPresentException}.
+     * The method then maps the user and book to a {@link UserBook} entity, sets the addition date, saves the entity, and returns a {@link UserBookResponse}.
+     * </p>
+     *
+     * @param userDetails the details of the authenticated user.
+     * @param bookId the ID of the book to add to the user's library.
+     * @return a mapped {@link UserBookResponse} containing the added book.
+     * @throws ResourceNotFoundException if the user or the specified book does not exist in the system.
+     * @throws BookAlreadyPresentException if the book is already present in the user's library.
      */
     public UserBookResponse addUserBook(UserDetails userDetails, int bookId) {
 
         String username = userDetails.getUsername();
 
-        //Mi ricavo l'utente autenticato e il libro
+        //Retrieve authenticated user and book
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "bookId", bookId));
 
-        //Verifico che il libro non sia già presente nella libreria dell'utente
+        //Check if book is already present in user's library
         Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
         if (optionalUserBook.isPresent()) {
             throw new BookAlreadyPresentException(bookId, username);
@@ -59,7 +65,7 @@ public class UserBookServiceImpl implements UserBookService {
 
         UserBook userBook = userBookMapper.asEntity(user, book);
 
-        //Setto l'addDate e salvo
+        //Set the addDate and save
         userBook.setAddDate(LocalDateTime.now());
         userBookRepository.save(userBook);
 
@@ -67,35 +73,49 @@ public class UserBookServiceImpl implements UserBookService {
     }
 
     /**
-     * Restituisce la lista dei libri associati all'utente autenticato.
+     * Returns the list of books associated with the authenticated user.
      *
-     * @param userDetails Le informazioni dell'utente autenticato.
-     * @return La lista dei libri associati all'uente
-     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o non ha libri associati.
+     * <p>
+     * This method fetches the user by their username from the authenticated user details,
+     * and then retrieves the list of active books associated with that user.
+     * If the user is not found or has no associated books, it throws appropriate exceptions.
+     * </p>
+     *
+     * @param userDetails the details of the authenticated user.
+     * @return the list of books associated with the user.
+     * @throws ResourceNotFoundException if the user does not exist in the system.
+     * @throws EmptyListException if the user has no associated books.
      */
     public List<UserBookResponse> getUserBooks(UserDetails userDetails) {
 
-        //Trovo prima l'utente
+        // Retrieve the user by their username from the authenticated user details
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        //Tramite una query trovo solo i libri con delete_date a null associati ad un utente
+        // Retrieve only the active books associated with the user using a custom query
         List<UserBook> userBookList = userBookRepository.findActiveBooksByUser(user);
 
         if (userBookList.isEmpty()) {
             throw new EmptyListException("books", username);
         }
 
+        // Map the list of UserBook entities to UserBookResponse DTOs and return
         return userBookMapper.asResponseList(userBookList);
     }
 
     /**
-     * Elimina un libro dalla libreria dell'utente autenticato.
+     * Deletes a book from the library of the authenticated user.
      *
-     * @param userDetails Le informazioni dell'utente autenticato.
-     * @param bookId      L'ID del libro da eliminare dalla libreria dell'utente.
-     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o se il libro non è presente nella libreria dell'utente.
+     * <p>
+     * This method retrieves the authenticated user and checks if the specified book is present in the user's library.
+     * If the user or the book is not found, a {@link ResourceNotFoundException} is thrown.
+     * If the book is found, the deletion date is set, and the book is marked as deleted.
+     * </p>
+     *
+     * @param userDetails the details of the authenticated user.
+     * @param bookId the ID of the book to be removed from the user's library.
+     * @throws ResourceNotFoundException if the user does not exist in the system or if the book is not present in the user's library.
      */
     public void deleteUserBook(UserDetails userDetails, int bookId) {
 
@@ -103,45 +123,49 @@ public class UserBookServiceImpl implements UserBookService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        // Recupero il libro dall'ID fornito e verifico se è presente nella libreria dell'utente
+        // Retrieve the book by its ID and check if it is present in the user's library
         Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
 
-        // Se non è presente restituisco un messaggio di errore
+        // If the book is not present, throw a ResourceNotFoundException
         if (optionalUserBook.isEmpty()) {
             throw new ResourceNotFoundException("Book", "id", bookId, username);
         }
 
-        // Altrimenti imposto la data di eliminazione e salvo
+        // If the book is found, set the deletion date and mark it as deleted
         UserBook userBook = optionalUserBook.get();
         userBook.setDeleteDate(LocalDateTime.now());
         userBookRepository.save(userBook);
     }
 
     /**
-     * Aggiorna il numero di volte che un determinato libro è stato letto nella libreria dell'utente autenticato.
+     * Updates the read count of a specific book in the authenticated user's library.
      *
-     * @param userDetails Le informazioni dell'utente autenticato.
-     * @param bookId      L'ID del libro da aggiornare.
-     * @param readCount   Il nuovo numero di volte che il libro è stato letto.
-     * @return Una ResponseEntity che conferma l'aggiornamento del conteggio delle letture del libro, se avvenuto con successo.
-     * @throws ResourceNotFoundException Se l'utente non esiste nel sistema o se il libro non è presente nella libreria dell'utente.
+     * <p>
+     * This method retrieves the authenticated user and checks if the specified book is present in the user's library.
+     * If the user or the book is not found, a {@link ResourceNotFoundException} is thrown.
+     * If the book is found, the read count is updated and the changes are saved.
+     * </p>
+     *
+     * @param userDetails the details of the authenticated user.
+     * @param bookId the ID of the book to update.
+     * @param readCount the new read count for the book.
+     * @return a {@link UserBookResponse} confirming the update of the book's read count, if successful.
+     * @throws ResourceNotFoundException if the user does not exist in the system or if the book is not present in the user's library.
      */
     @Transactional
     public UserBookResponse updateBookReadCount(UserDetails userDetails, int bookId, int readCount) {
 
-        // Recupero l'utente autenticato dal repository degli utenti
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        // Recupero il libro dall'ID fornito e verifico se è presente nella libreria dell'utente
         Optional<UserBook> optionalUserBook = userBookRepository.getBookByIdAndUsername(bookId, user);
 
-        // Se non è presente restituisco un messaggio di errore
         if (optionalUserBook.isEmpty()) {
             throw new ResourceNotFoundException("Book", "id", bookId, username);
         }
 
+        // Update the read count for the book and save the changes
         UserBook userBook = optionalUserBook.get();
         userBook.setReadCount(readCount);
         userBookRepository.save(userBook);

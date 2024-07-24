@@ -4,7 +4,7 @@ import com.nico.library.dto.mapper.UserMapper;
 import com.nico.library.entity.Authority;
 import com.nico.library.entity.User;
 import com.nico.library.exceptions.custom.BadRequestException;
-import com.nico.library.exceptions.custom.EmptyListException;
+import com.nico.library.exceptions.custom.EmptyAuthoritiesException;
 import com.nico.library.exceptions.custom.ResourceNotFoundException;
 import com.nico.library.dto.response.user.UserResponse;
 import com.nico.library.repository.AuthorityRepository;
@@ -13,35 +13,38 @@ import com.nico.library.security.JwtService;
 import com.nico.library.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService
-{
+public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
 
     /**
-     * Attiva l'account dell'utente corrispondente al token JWT fornito.
+     * Enables the user's account corresponding to the provided JWT token.
+     * <p>
+     * This method extracts the username from the JWT token and enables the user's account
+     * if the user is found. If no user is found with the extracted username, a
+     * {@link ResourceNotFoundException} is thrown.
+     * </p>
      *
-     * @param jwt Il token JWT utilizzato per identificare l'utente.
-     * @throws ResourceNotFoundException Se l'utente corrispondente al token JWT non viene trovato nel sistema.
+     * @param jwt the JWT token used to identify the user.
+     * @throws ResourceNotFoundException if no user with the extracted username is found.
      */
     @Transactional
-    public void activate(String jwt)
-    {
-        // Estraggo il nome utente dal token JWT
+    public void activate(String jwt) {
+
+        // I extract the username from the JWT token
         String username = jwtService.extractUsername(jwt);
 
-        // Cerco l'utente nel repository e attivo il suo account se trovato
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
@@ -50,61 +53,80 @@ public class UserServiceImpl implements UserService
     }
 
     /**
-     * Trova il nome utente corrispondente all'ID utente fornito.
+     * Finds the username corresponding to the provided user ID.
+     * <p>
+     * This method searches for a user by their unique ID and returns their username.
+     * If the user is not found, a {@link ResourceNotFoundException} is thrown.
+     * </p>
      *
-     * @param userId L'ID dell'utente di cui si desidera trovare il nome utente.
-     * @return Una ResponseEntity che contiene il nome utente dell'utente trovato.
-     * @throws ResourceNotFoundException Se l'utente corrispondente all'ID fornito non viene trovato nel sistema.
+     * @param userId the unique identifier of the user whose username you want to find.
+     * @return the username of the user.
+     * @throws ResourceNotFoundException if no user with the specified ID is found.
      */
-    public String findUsername(int userId)
-    {
-        // Cerco l'utente nel repository degli utenti utilizzando l'ID fornito
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new ResourceNotFoundException("User", "userId", userId));
+    public String findUsername(int userId) {
 
-        // Ottengo il nome utente dall'utente trovato e lo restituisco
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+
         return user.getUsername();
     }
 
     /**
-     * Aggiorna le autorizzazioni dell'utente corrispondente all'ID specificato con le nuove autorizzazioni fornite.
+     * Updates user's authorities with the new authorities provided.
+     * <p>
+     * This method searches for a user by their unique ID and sets the new authorities provided.
+     * If the user is not found, a {@link ResourceNotFoundException} is thrown.
+     * Also, an {@link EmptyAuthoritiesException} is thrown if no authorities are found.
+     * </p>
      *
-     * @param id          L'ID dell'utente di cui si desidera aggiornare le autorizzazioni.
-     * @param authorities Il set delle nuove autorizzazioni da assegnare all'utente.
-     * @throws ResourceNotFoundException Se l'utente corrispondente all'ID fornito non viene trovato nel sistema.
+     * @param userId      the unique identifier of the user whose authorities you want to update.
+     * @param authorities the set of new authorities to assign to the user.
+     * @throws ResourceNotFoundException if no user with the specified ID is found.
+     * @throws EmptyAuthoritiesException if no authorities are found.
      */
     @Transactional
-    public void updateAuthorities(int id, Set<String> authorities)
-    {
-        // Verifico l'esistenza dell'utente
-        User u = userRepository.findById(id)
-                .orElseThrow((() -> new ResourceNotFoundException("User", "id", id)));
+    public void updateAuthorities(int userId, Set<String> authorities) {
 
-        //Trasformo Set<String> in Set<Authority>
+        User u = userRepository.findById(userId)
+                .orElseThrow((() -> new ResourceNotFoundException("User", "id", userId)));
+
+        //Retrieve visible authorities find in the DB
         Set<Authority> auths = authorityRepository.findByVisibleTrueAndAuthorityNameIn(authorities);
-        if(auths.isEmpty())
-        {
-            throw new EmptyListException("authorities");
+
+        //Extract authority names found in auths
+        Set<String> foundAuthorityNames =
+                auths.stream()
+                .map(Authority::getAuthorityName)
+                .collect(Collectors.toSet());
+
+        //Extract authorities not found in the DB
+        Set<String> notFoundAuthorities =
+                authorities.stream()
+                .filter(auth -> !foundAuthorityNames.contains(auth))
+                .collect(Collectors.toSet());
+
+        if (!notFoundAuthorities.isEmpty()) {
+            throw new EmptyAuthoritiesException(notFoundAuthorities);
         }
 
-        //Setto il Set<Authority> su user e salvo
         u.setAuthorities(auths);
         userRepository.save(u);
     }
 
     /**
-     * Ottiene i dettagli dell'utente corrente.
+     * Retrieves the details of the current user.
      *
-     * @param userDetails Le informazioni sull'utente corrente.
-     * @return I dettagli dell'utente corrente.
+     * @param userDetails the details of the current user.
+     * @return the details of the current user in a {@link UserResponse} object.
+     * @throws BadRequestException if no user is logged in.
      */
-    public UserResponse getMe(UserDetails userDetails)
-    {
-        if(userDetails == null){
+    public UserResponse getMe(UserDetails userDetails) {
+
+        if (userDetails == null) {
             throw new BadRequestException("No user logged! Please, log in and try again.");
         }
 
-        // Mappo le informazioni sull'utente corrente in un oggetto UserResponse
-        return userMapper.asUserDetailsResponse((User)userDetails);
+        // UserDetails response mapped
+        return userMapper.asUserDetailsResponse((User) userDetails);
     }
 }

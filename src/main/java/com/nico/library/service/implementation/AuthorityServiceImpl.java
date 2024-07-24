@@ -10,8 +10,6 @@ import com.nico.library.repository.AuthorityRepository;
 import com.nico.library.service.AuthorityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,9 +19,24 @@ public class AuthorityServiceImpl implements AuthorityService
     private final AuthorityRepository authorityRepository;
     private final AuthorityMapper authorityMapper;
 
+    /**
+     * Adds a new authority to the system based on the provided request.
+     *
+     * @param request AuthorityRequest object containing the name of the authority to add.
+     * @return AuthorityResponse object containing the name of the added authority.
+     * @throws BadRequestException if the authority name is invalid or already exists.
+     */
     public AuthorityResponse addAuthority(AuthorityRequest request) {
-        if(authorityRepository.existsByAuthorityName(request.getAuthorityName()))
-            throw new BadRequestException("Authority already present");
+
+        String authorityName = request.getAuthorityName().toUpperCase();
+
+        // Check if role is valid
+        if(!isValidAuthority(authorityName)){
+            throw new BadRequestException(String.format("Authority '%s' is invalid, it must starts with 'ROLE_'", authorityName));
+        }
+
+        if(authorityRepository.existsByAuthorityName(authorityName))
+            throw new BadRequestException(String.format("Authority '%s' already present", authorityName));
 
         Authority authority = authorityMapper.asEntity(request);
         Authority savedAuthority = authorityRepository.save(authority);
@@ -31,6 +44,12 @@ public class AuthorityServiceImpl implements AuthorityService
         return authorityMapper.asResponse(savedAuthority);
     }
 
+    /**
+     * Toggles the visibility of the authority identified by the provided ID.
+     *
+     * @param id The ID of the authority whose visibility is to be toggled.
+     * @throws ResourceNotFoundException if no authority is found with the provided ID.
+     */
     @Transactional
     public void switchVisibility(byte id)
     {
@@ -38,5 +57,20 @@ public class AuthorityServiceImpl implements AuthorityService
                 .orElseThrow(()-> new ResourceNotFoundException("Authority", "id", id));
 
         a.setVisible(!a.isVisible());
+    }
+
+    /**
+     * Checks if the provided authority name is valid.
+     * An authority name is considered valid if it is not null, not blank, and starts with 'ROLE_'.
+     *
+     * @param authorityName The authority name to validate.
+     * @return true if the authority name is valid, false otherwise.
+     * @throws BadRequestException if the authority name is null or blank.
+     */
+    public boolean isValidAuthority(String authorityName){
+        if(authorityName == null || authorityName.isBlank()){
+            throw new BadRequestException("Please, enter an authority!");
+        }
+        return authorityName.startsWith("ROLE_");
     }
 }

@@ -3,6 +3,7 @@ package com.nico.library.configuration;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -10,9 +11,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "OpenApi specification - library",
-                version = "1.0",
-                description = "OpenApi documentation for library"
+                contact = @Contact(
+                        email = "baldi364@gmail.com"
+                ),
+                title = "OpenApi specification - Personal Library",
+                description = "A Personal Library Management System",
+                version = "1.0"
         ),
         servers = {
                 @Server(

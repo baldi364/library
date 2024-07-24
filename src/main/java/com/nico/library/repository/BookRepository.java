@@ -1,7 +1,6 @@
 package com.nico.library.repository;
 
 import com.nico.library.entity.Book;
-import com.nico.library.dto.response.book.BookResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
